@@ -25,6 +25,46 @@ try {
     }
   }
   
+  // Try to load pg
+  try {
+    const pg = require('pg');
+    console.log('✓ pg module loaded successfully');
+  } catch (error) {
+    console.error('Failed to load pg module:', error);
+  }
+
+  // Try to load connect-pg-simple
+  try {
+    const connectPgSimple = require('connect-pg-simple');
+    console.log('✓ connect-pg-simple loaded successfully');
+  } catch (error) {
+    console.error('Failed to load connect-pg-simple:', error);
+  }
+  
+  // Try to load bcrypt
+  try {
+    const bcrypt = require('bcrypt');
+    console.log('✓ bcrypt loaded successfully');
+  } catch (error) {
+    console.error('Failed to load bcrypt:', error);
+  }
+  
+  // Try to load resend
+  try {
+    const resend = require('resend');
+    console.log('✓ resend loaded successfully');
+  } catch (error) {
+    console.error('Failed to load resend:', error);
+  }
+  
+  // Try to load better-sqlite3
+  try {
+    const betterSqlite3 = require('better-sqlite3');
+    console.log('✓ better-sqlite3 loaded successfully');
+  } catch (error) {
+    console.error('Failed to load better-sqlite3:', error);
+  }
+  
   // Try to load drizzle-orm
   try {
     const drizzle = await import('drizzle-orm');

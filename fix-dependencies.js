@@ -34,13 +34,13 @@ if (packageJson.dependencies) {
     delete packageJson.dependencies['three'];
   }
   
-  // Ensure postgres is properly installed
-  if (!packageJson.dependencies['postgres'] || packageJson.dependencies['postgres'] === '') {
-    packageJson.dependencies['postgres'] = '^3.4.7';
-  }
-  
-  // Ensure other critical server dependencies are present
+  // Ensure all critical server dependencies are present with correct versions
   const criticalDependencies = {
+    'postgres': '^3.4.7',
+    'pg': '^8.16.0',
+    'connect-pg-simple': '^9.0.1',
+    'bcrypt': '^6.0.0',
+    'resend': '^4.5.2',
     'drizzle-orm': '^0.39.1',
     'express': '^4.21.2',
     'express-session': '^1.18.1',
