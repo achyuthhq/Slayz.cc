@@ -467,21 +467,26 @@ export default function ProfilePage() {
   });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
+    const card = cardRef.current;
+    if (!card) return;
+  
+    const { left, top, width, height } = card.getBoundingClientRect();
+    const centerX = left + width / 2;
+    const centerY = top + height / 2;
+  
+    const deltaX = e.clientX - centerX;
+    const deltaY = e.clientY - centerY;
+  
     requestAnimationFrame(() => {
-      const rotateXValue = ((e.clientY - centerY) / rect.height) * 15;
-      const rotateYValue = ((centerX - e.clientX) / rect.width) * 15;
-
+      const rotateXValue = (deltaY / height) * 15;
+      const rotateYValue = (-deltaX / width) * 15;
+  
       rotateX.set(rotateXValue);
       rotateY.set(rotateYValue);
       scale.set(1.02);
     });
   };
+  
 
   const handleMouseLeave = () => {
     requestAnimationFrame(() => {
@@ -503,15 +508,15 @@ export default function ProfilePage() {
 
   return (
     <div style={styles.container}>
-      <DocumentTitle title={displayName} />
-      {user?.profileSongUrl && (
-        <AudioPlayer
-          url={user.profileSongUrl}
-          autoPlay={true}
-          showEnterFeature={true}
-          enterPageSettings={user?.theme?.enterPage}
-        />
-      )}
+      <DocumentTitle title={displayName ? displayName.toString() : ""} />
+      {user?.profileSongUrl ? (
+  <AudioPlayer
+    url={String(user.profileSongUrl)}
+    autoPlay={true}
+    showEnterFeature={true}
+    enterPageSettings={user?.theme?.enterPage}
+  />
+) : null}
       {particleEffect?.enabled && (
         <div className="fixed inset-0 z-40 pointer-events-none">
           <ParticlesComponent
@@ -523,68 +528,67 @@ export default function ProfilePage() {
           />
         </div>
       )}
-      {user?.backgroundImage && (
-        <div
-          className="fixed inset-0 z-0 overflow-hidden"
-          style={styles.background}
-        >
-          <div className="absolute inset-0 w-full h-full">
-            {isVideoURL(user.backgroundImage) ? (
-              <video
-                src={user.backgroundImage}
-                className="w-full h-full object-cover fixed"
-                style={{
-                  opacity: 1,
-                }}
-                autoPlay
-                loop
-                muted
-                playsInline
-              >
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <img
-                src={user.backgroundImage}
-                alt=""
-                className="w-full h-full object-cover fixed"
-                style={{
-                  opacity: imageLoaded.background ? 0.5 : 0,
-                  transition: "opacity 0.5s ease",
-                }}
-                onLoad={() =>
-                  setImageLoaded((prev) => ({ ...prev, background: true }))
-                }
-              />
-            )}
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-          </div>
-        </div>
+{user?.backgroundImage ? (
+  <div
+    className="fixed inset-0 z-0 overflow-hidden"
+    style={styles.background}
+  >
+    <div className="absolute inset-0 w-full h-full">
+    {isVideoURL(user.backgroundImage as string) ? (
+  <video
+    src={user.backgroundImage as string}
+    className="w-full h-full object-cover fixed"
+    style={{ opacity: 1 }}
+    autoPlay
+    loop
+    muted
+    playsInline
+  >
+    Your browser does not support the video tag.
+  </video>
+      ) : (
+        <img
+        src={user.backgroundImage as string}
+          alt={`${user.displayName || "User"}'s background`}
+          className="w-full h-full object-cover fixed"
+          style={{
+            opacity: imageLoaded.background ? 0.5 : 0,
+            transition: "opacity 0.5s ease",
+          }}
+          onLoad={() =>
+            setImageLoaded((prev) => ({ ...prev, background: true }))
+          }
+        />
       )}
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+    </div>
+  </div>
+) : null}
+
 
       <div className="relative z-10 w-full max-w-5xl mx-auto px-4 py-8 sm:py-12">
-        <motion.div
-          ref={cardRef}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          style={{
-            rotateX,
-            rotateY,
-            scale,
-            transformPerspective: "1200px",
-            ...styles.content,
-            boxSizing: "border-box",
-            justifyContent: "space-between",
-            willChange: "transform",
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-            transform: "translateZ(0)",
-            WebkitTransform: "translateZ(0)",
-            transformStyle: "preserve-3d",
-            WebkitTransformStyle: "preserve-3d",
-          }}
-          className="rounded-xl bg-black/25 border border-white/10 py-12 px-6 backdrop-blur-xl relative w-full max-w-[600px] mx-auto min-h-[520px] sm:min-h-[450px] transition-colors duration-300 ease-in-out hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:border-white/30"
-        >
+      <motion.div<HTMLDivElement>
+  ref={cardRef}
+  onMouseMove={handleMouseMove}
+  onMouseLeave={handleMouseLeave}
+  style={{
+    rotateX,
+    rotateY,
+    scale,
+    transformPerspective: "1200px",
+    ...styles.content,
+    boxSizing: "border-box",
+    justifyContent: "space-between",
+    willChange: "transform",
+    backfaceVisibility: "hidden",
+    WebkitBackfaceVisibility: "hidden",
+    transform: "translateZ(0)",
+    WebkitTransform: "translateZ(0)",
+    transformStyle: "preserve-3d",
+    WebkitTransformStyle: "preserve-3d",
+  }}
+  className="rounded-xl bg-black/25 border border-white/10 py-12 px-6 backdrop-blur-xl relative w-full max-w-[600px] mx-auto min-h-[520px] sm:min-h-[450px] transition-colors duration-300 ease-in-out hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:border-white/30"
+>
           <div
             className={`absolute flex items-center gap-2 text-white/80 bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-sm ${
               user?.theme?.viewCountPlacement === "top-right"
@@ -604,10 +608,10 @@ export default function ProfilePage() {
 
           <div className="flex justify-center mb-2 mt-10 sm:mt-0 relative">
             <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-white/10 relative">
-              {user.logo ? (
+              {user?.logo ? (
                 <img
-                  src={user.logo}
-                  alt={displayName}
+                  src={String(user.logo)}
+                  alt={String(displayName)}
                   className="w-full h-full object-cover"
                   style={{
                     opacity: imageLoaded.logo ? 1 : 0,
@@ -620,7 +624,9 @@ export default function ProfilePage() {
               ) : (
                 <div className="w-full h-full bg-white/10 flex items-center justify-center">
                   <span className="text-3xl" style={styles.text}>
-                    {displayName[0].toUpperCase()}
+                    {typeof displayName === 'string' && displayName.length > 0 
+                      ? displayName[0].toUpperCase() 
+                      : '?'}
                   </span>
                 </div>
               )}
@@ -674,8 +680,8 @@ export default function ProfilePage() {
           <div className="flex items-center justify-center gap-3">
             <div className="relative inline-block">
               <SparkleName
-                displayName={displayName}
-                effect={user.theme?.sparkleEffect}
+                displayName={(displayName || "") as string}
+                effect={user.theme?.sparkleEffect ? user.theme.sparkleEffect : undefined}
                 className="text-5.9xl font-bold glow-name gradient-text"
               />
             </div>
@@ -748,7 +754,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             )}
-          {user.bio && (
+          {typeof user.bio === 'string' && (
             <div
               className="text-gray-300 text-center text-lg mb-8 px-8"
               style={styles.text}
@@ -768,7 +774,7 @@ export default function ProfilePage() {
 
           <div
             className={`relative flex flex-wrap justify-center px-4 ${
-              user.bio ? "mt-4" : "mt-8"
+              typeof user.bio === 'string' ? "mt-4" : "mt-8"
             }`}
           >
             {links.map((link) => {
@@ -816,10 +822,11 @@ export default function ProfilePage() {
                     discordGlobalName: safeString(user.discordGlobalName),
                     discordAvatar: safeString(user.discordAvatar),
                     discordStatus: safeString(user.discordStatus) as 'online' | 'idle' | 'dnd' | 'offline' | undefined,
-                    discordActivity: user.discordActivity || null,
-                    lastOnline: user.lastOnline instanceof Date ? user.lastOnline : 
+                    discordActivity: user.discordActivity && typeof user.discordActivity === 'object' && 'name' in user.discordActivity ? 
+                      { name: String(user.discordActivity.name) } : null,
+                    lastOnline: user.lastOnline instanceof Date ? user.lastOnline.toISOString() : 
                               typeof user.lastOnline === 'string' || typeof user.lastOnline === 'number' ? 
-                              new Date(user.lastOnline) : undefined
+                              new Date(user.lastOnline).toISOString() : undefined
                   }}
                   isConnected={true}
                   isSettingsPage={false}
@@ -838,10 +845,11 @@ export default function ProfilePage() {
                       discordGlobalName: safeString(user.discordGlobalName),
                       discordAvatar: safeString(user.discordAvatar),
                       discordStatus: safeString(user.discordStatus) as 'online' | 'idle' | 'dnd' | 'offline' | undefined,
-                      discordActivity: user.discordActivity || null,
-                      lastOnline: user.lastOnline instanceof Date ? user.lastOnline : 
+                      discordActivity: user.discordActivity && typeof user.discordActivity === 'object' && 'name' in user.discordActivity ? 
+                        { name: String(user.discordActivity.name) } : null,
+                      lastOnline: user.lastOnline instanceof Date ? user.lastOnline.toISOString() : 
                                 typeof user.lastOnline === 'string' || typeof user.lastOnline === 'number' ? 
-                                new Date(user.lastOnline) : undefined
+                                new Date(user.lastOnline).toISOString() : undefined
                     }}
                     isConnected={true}
                     isSettingsPage={false}
@@ -901,22 +909,23 @@ export default function ProfilePage() {
         {/* Steam Profile Card - Outside of the main container */}
         {user && hasSteamConnected(user) && (
           <motion.div 
-            className="mt-4 mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, delay: 0.1 }}
           >
-            <SteamProfileCard user={user} className="max-w-4xl mx-auto" />
+            <div className="mt-4 mb-4">
+              <SteamProfileCard user={user as any} className="max-w-4xl mx-auto" />
+            </div>
           </motion.div>
         )}
         
-        {user.theme?.spotifyLink && (
+        {user?.theme?.spotifyLink && (
           <div className="mt-4 mb-8">
             <div className="rounded-xl">
               <SpotifyPlayer 
                 spotifyUrl={user.theme.spotifyLink} 
-                displayText={user.theme.spotifyDisplayText || "Favourite Song"} 
+                displayText="Favourite Song"
               />
             </div>
           </div>
@@ -924,7 +933,7 @@ export default function ProfilePage() {
 
         {chatbotEnabled && chatbotSettings && (
           <motion.div
-            className="fixed bottom-4 right-4 z-[9999]"
+            style={{ position: 'fixed', bottom: '1rem', right: '1rem', zIndex: 9999 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}

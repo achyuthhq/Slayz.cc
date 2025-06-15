@@ -38,11 +38,27 @@ export default defineConfig({
     commonjsOptions: {
       // Fix for packages that might cause issues
       transformMixedEsModules: true,
+    },
+    rollupOptions: {
+      // Explicitly mark problematic modules as external
+      external: ['gsap', 'globe.gl'],
+      output: {
+        // Prevent warning about missing exports
+        manualChunks: (id) => {
+          // Group React packages together
+          if (id.includes('node_modules/react') || 
+              id.includes('node_modules/react-dom')) {
+            return 'react-vendor';
+          }
+          return null;
+        }
+      }
     }
   },
   optimizeDeps: {
     // Force packages to use project's React version
     include: ['react', 'react-dom'],
+    exclude: ['gsap', 'globe.gl'], // Exclude problematic packages
     esbuildOptions: {
       // Needed to prevent version conflicts
       preserveSymlinks: true,

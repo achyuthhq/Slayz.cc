@@ -21,6 +21,18 @@ if (packageJson.dependencies) {
   if (packageJson.dependencies['gsap']) {
     delete packageJson.dependencies['gsap'];
   }
+  
+  // Remove globe.gl since we're using a fallback implementation
+  if (packageJson.dependencies['globe.gl']) {
+    delete packageJson.dependencies['globe.gl'];
+  }
+  
+  // Also remove three.js if it's not needed elsewhere
+  if (packageJson.dependencies['three'] && 
+      !packageJson.dependencies['@react-three/drei'] && 
+      !packageJson.dependencies['@react-three/fiber']) {
+    delete packageJson.dependencies['three'];
+  }
 }
 
 // Write the updated package.json back to disk
