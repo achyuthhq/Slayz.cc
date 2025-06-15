@@ -14,7 +14,23 @@ node fix-dependencies.js
 
 # Ensure all external modules are installed correctly
 echo "Ensuring external modules are installed..."
-npm install postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 lightningcss --no-save
+npm install --no-save postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 lightningcss
+
+# Verify postgres is installed
+if [ ! -d "node_modules/postgres" ]; then
+  echo "ERROR: postgres module not installed properly. Installing again..."
+  npm install --no-save postgres@3.4.7
+  
+  # Double check
+  if [ ! -d "node_modules/postgres" ]; then
+    echo "CRITICAL ERROR: Failed to install postgres module"
+    exit 1
+  else
+    echo "postgres module successfully installed on second attempt"
+  fi
+else
+  echo "postgres module verified"
+fi
 
 # Create a simple module to ensure babel can find @babel/preset-typescript
 echo "Creating babel preset typescript stub..."

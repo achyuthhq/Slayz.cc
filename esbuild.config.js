@@ -4,6 +4,7 @@ import path from 'path';
 
 // List of all Node.js modules that should be treated as external
 const externalModules = [
+  // Critical database modules - these MUST be external
   'postgres',
   'pg',
   'connect-pg-simple',
@@ -55,6 +56,18 @@ const handleLightningCSSPlugin = {
   },
 };
 
+// Create a plugin to ensure postgres is properly handled
+const handlePostgresPlugin = {
+  name: 'handle-postgres',
+  setup(build) {
+    // Log when postgres is imported to help with debugging
+    build.onResolve({ filter: /^postgres$/ }, args => {
+      console.log(`[esbuild] Marking 'postgres' as external from ${args.importer}`);
+      return { path: args.path, external: true };
+    });
+  },
+};
+
 // Build configuration
 const buildOptions = {
   entryPoints: ['server/index.ts'],
@@ -68,7 +81,7 @@ const buildOptions = {
   sourcemap: true,
   target: ['node18'],
   logLevel: 'info',
-  plugins: [handleLightningCSSPlugin],
+  plugins: [handleLightningCSSPlugin, handlePostgresPlugin],
 };
 
 try {

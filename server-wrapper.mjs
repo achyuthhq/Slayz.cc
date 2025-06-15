@@ -3,11 +3,28 @@
 // This wrapper ensures all dependencies are properly loaded
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
+import fs from 'fs';
+import path from 'path';
 
 // Create a mock for lightningcss if it's not available
 if (!globalThis.lightningcss) {
   globalThis.lightningcss = {};
   console.log('Created mock for lightningcss');
+}
+
+// Check if postgres module exists
+const postgresPath = path.join(process.cwd(), 'node_modules/postgres');
+if (!fs.existsSync(postgresPath)) {
+  console.error('CRITICAL ERROR: postgres module directory not found!');
+  console.log('Attempting emergency installation of postgres...');
+  try {
+    const { execSync } = require('child_process');
+    execSync('npm install --no-save postgres@3.4.7', { stdio: 'inherit' });
+    console.log('Emergency postgres installation completed');
+  } catch (err) {
+    console.error('Failed emergency postgres installation:', err);
+    process.exit(1);
+  }
 }
 
 // Pre-load critical dependencies
@@ -22,21 +39,37 @@ try {
     console.log('Note: lightningcss not available, using mock implementation');
   }
   
-  // Try to load postgres
+  // Try to load postgres - this is critical, so we'll try multiple approaches
+  let postgresLoaded = false;
+  
+  // Approach 1: Direct require
   try {
-    const postgres = await import('postgres');
-    console.log('✓ Postgres module loaded successfully');
+    const postgres = require('postgres');
+    console.log('✓ Postgres module loaded successfully via require');
+    postgresLoaded = true;
+    // Make it globally available
+    globalThis.postgres = postgres;
   } catch (error) {
-    console.error('Failed to load postgres module:', error);
-    
-    // Try to load using require as fallback
+    console.error('Failed to load postgres module via require:', error);
+  }
+  
+  // Approach 2: ESM import
+  if (!postgresLoaded) {
     try {
-      const postgres = require('postgres');
-      console.log('✓ Postgres module loaded via require fallback');
-    } catch (requireError) {
-      console.error('Failed to load postgres via require:', requireError);
-      process.exit(1);
+      const postgres = await import('postgres');
+      console.log('✓ Postgres module loaded successfully via ESM import');
+      postgresLoaded = true;
+      // Make it globally available
+      globalThis.postgres = postgres;
+    } catch (error) {
+      console.error('Failed to load postgres module via ESM import:', error);
     }
+  }
+  
+  // If postgres still not loaded, this is a critical failure
+  if (!postgresLoaded) {
+    console.error('CRITICAL ERROR: Failed to load postgres module after multiple attempts');
+    process.exit(1);
   }
   
   // Try to load pg
