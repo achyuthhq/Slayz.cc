@@ -5,9 +5,10 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsx server/index.ts",
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build && node esbuild.config.js",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
     "build:server": "node esbuild.config.js",
-    "start": "cross-env NODE_OPTIONS=--max-old-space-size=4096 npm run build && node dist/index.mjs",
+    "start": "node dist/index.mjs",
     "check": "tsc",
     "db:push": "drizzle-kit push"
   },

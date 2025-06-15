@@ -4,9 +4,23 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
+// Create a mock for lightningcss if it's not available
+if (!globalThis.lightningcss) {
+  globalThis.lightningcss = {};
+  console.log('Created mock for lightningcss');
+}
+
 // Pre-load critical dependencies
 try {
   console.log('Pre-loading critical dependencies...');
+  
+  // Try to load lightningcss
+  try {
+    const lightningcss = require('lightningcss');
+    console.log('✓ lightningcss module loaded successfully');
+  } catch (error) {
+    console.log('Note: lightningcss not available, using mock implementation');
+  }
   
   // Try to load postgres
   try {

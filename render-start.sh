@@ -14,7 +14,7 @@ node fix-dependencies.js
 
 # Ensure all external modules are installed correctly
 echo "Ensuring external modules are installed..."
-npm install postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 --no-save
+npm install postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 lightningcss --no-save
 
 # Create a simple module to ensure babel can find @babel/preset-typescript
 echo "Creating babel preset typescript stub..."
