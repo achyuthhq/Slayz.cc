@@ -906,7 +906,7 @@ export default function ProfilePage() {
           </div>
         </motion.div>
         
-        {/* Steam Profile Card - Outside of the main container */}
+        {/* Steam Profile Cards - Outside of the main container */}
         {user && hasSteamConnected(user) && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
