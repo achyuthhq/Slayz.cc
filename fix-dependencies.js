@@ -33,6 +33,25 @@ if (packageJson.dependencies) {
       !packageJson.dependencies['@react-three/fiber']) {
     delete packageJson.dependencies['three'];
   }
+  
+  // Ensure postgres is properly installed
+  if (!packageJson.dependencies['postgres'] || packageJson.dependencies['postgres'] === '') {
+    packageJson.dependencies['postgres'] = '^3.4.7';
+  }
+  
+  // Ensure other critical server dependencies are present
+  const criticalDependencies = {
+    'drizzle-orm': '^0.39.1',
+    'express': '^4.21.2',
+    'express-session': '^1.18.1',
+    'better-sqlite3': '^11.9.1'
+  };
+  
+  for (const [dep, version] of Object.entries(criticalDependencies)) {
+    if (!packageJson.dependencies[dep]) {
+      packageJson.dependencies[dep] = version;
+    }
+  }
 }
 
 // Write the updated package.json back to disk

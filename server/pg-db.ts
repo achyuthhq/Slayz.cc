@@ -1,4 +1,5 @@
 import { drizzle } from "drizzle-orm/postgres-js";
+// Use dynamic import for postgres to ensure it's properly bundled
 import postgres from "postgres";
 import * as sharedSchema from "../shared/pg-schema";
 import { passwordResetTokens } from "./schema";
@@ -36,4 +37,7 @@ export async function checkDatabaseConnection() {
     console.error('Database connection error:', error);
     return false;
   }
-} 
+}
+
+// Export postgres directly to ensure it's included in the bundle
+export { postgres }; 
