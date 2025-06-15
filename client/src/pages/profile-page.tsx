@@ -293,7 +293,7 @@ const generateStyles = (user: User & { theme: Theme }) => {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      padding: "1rem",
+      padding: "2rem 1rem",
       position: "relative" as const,
       cursor: user.theme?.cursor?.enabled
         ? `url(${user.theme.cursor.value}) 0 0, auto`
@@ -562,7 +562,7 @@ export default function ProfilePage() {
         </div>
       )}
 
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-4">
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 py-8 sm:py-12">
         <motion.div
           ref={cardRef}
           onMouseMove={handleMouseMove}
@@ -583,7 +583,7 @@ export default function ProfilePage() {
             transformStyle: "preserve-3d",
             WebkitTransformStyle: "preserve-3d",
           }}
-          className="rounded-xl bg-black/25 border border-white/10 py-12 px-6 backdrop-blur-xl relative w-full max-w-[600px] mx-auto min-h-[480px] sm:min-h-[400px] transition-colors duration-300 ease-in-out hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:border-white/30"
+          className="rounded-xl bg-black/25 border border-white/10 py-12 px-6 backdrop-blur-xl relative w-full max-w-[600px] mx-auto min-h-[520px] sm:min-h-[450px] transition-colors duration-300 ease-in-out hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:border-white/30"
         >
           <div
             className={`absolute flex items-center gap-2 text-white/80 bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-sm ${
@@ -627,7 +627,7 @@ export default function ProfilePage() {
             </div>
 
             {user.theme?.decoration?.enabled && (
-              <div className="absolute w-36 h-36 -top-2 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+              <div className="absolute w-[145px] h-[145px] -top-2 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
                 <DecorationPreview
                   decoration={user.theme.decoration}
                   className="w-full h-full"
@@ -804,10 +804,10 @@ export default function ProfilePage() {
           </div>
           
           {/* Discord, GitHub, and Steam Integration Section */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="mt-4 flex flex-col items-center w-full overflow-hidden">
             {user && hasDiscordConnected(user) && !hasGitHubConnected(user) && !hasSteamConnected(user) && (
-              // When only Discord is connected (no GitHub or Steam), span the full width on desktop
-              <div className="w-full col-span-1 md:col-span-2 mx-auto md:max-w-[80%] lg:max-w-[60%]">
+              // When only Discord is connected (no GitHub or Steam), center it properly
+              <div className="w-[90%] max-w-[480px] mx-auto overflow-hidden">
                 <AnimatedDiscordCard
                   user={{
                     discordId: safeString(user.discordId),
@@ -828,75 +828,71 @@ export default function ProfilePage() {
             )}
 
             {user && hasDiscordConnected(user) && (hasGitHubConnected(user) || hasSteamConnected(user)) && (
-              // When Discord is connected with GitHub or Steam, use the grid layout
-              <div className="w-full mx-auto">
-                <AnimatedDiscordCard
-                  user={{
-                    discordId: safeString(user.discordId),
-                    discordUsername: safeString(user.discordUsername),
-                    discordDisplayName: safeString(user.discordDisplayName),
-                    discordGlobalName: safeString(user.discordGlobalName),
-                    discordAvatar: safeString(user.discordAvatar),
-                    discordStatus: safeString(user.discordStatus) as 'online' | 'idle' | 'dnd' | 'offline' | undefined,
-                    discordActivity: user.discordActivity || null,
-                    lastOnline: user.lastOnline instanceof Date ? user.lastOnline : 
-                              typeof user.lastOnline === 'string' || typeof user.lastOnline === 'number' ? 
-                              new Date(user.lastOnline) : undefined
-                  }}
-                  isConnected={true}
-                  isSettingsPage={false}
-                />
-              </div>
-            )}
+              <div className="flex flex-col md:flex-row justify-center gap-4 w-[90%] max-w-[480px] mx-auto overflow-hidden">
+                <div className="w-full md:w-[330px] overflow-hidden">
+                  <AnimatedDiscordCard
+                    user={{
+                      discordId: safeString(user.discordId),
+                      discordUsername: safeString(user.discordUsername),
+                      discordDisplayName: safeString(user.discordDisplayName),
+                      discordGlobalName: safeString(user.discordGlobalName),
+                      discordAvatar: safeString(user.discordAvatar),
+                      discordStatus: safeString(user.discordStatus) as 'online' | 'idle' | 'dnd' | 'offline' | undefined,
+                      discordActivity: user.discordActivity || null,
+                      lastOnline: user.lastOnline instanceof Date ? user.lastOnline : 
+                                typeof user.lastOnline === 'string' || typeof user.lastOnline === 'number' ? 
+                                new Date(user.lastOnline) : undefined
+                    }}
+                    isConnected={true}
+                    isSettingsPage={false}
+                  />
+                </div>
 
-            {user && hasGitHubConnected(user) && (
-              <div className="w-full mx-auto">
-                <MotionWrapper
-                  className="bg-zinc-900/90 border border-zinc-800 rounded-lg p-4 mt-4 flex flex-col sm:flex-row items-center gap-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.15 }}
-                  wrapperClassName="w-full"
-                >
-                  {(() => {
-                    const githubUser = toGitHubUser(user);
-                    return (
-                      <>
-                        {githubUser.avatar_url && (
-                          <MotionImage
-                            src={githubUser.avatar_url}
-                            alt="GitHub Avatar"
-                            className="w-16 h-16 rounded-full"
-                            initial={{ scale: 0.8 }}
-                            animate={{ scale: 1 }}
-                            transition={{ duration: 0.2 }}
-                            wrapperClassName="flex-shrink-0"
-                          />
-                        )}
-                        <div className="flex flex-col">
-                          <h3 className="text-lg font-semibold">
-                            {githubUser.login}
-                          </h3>
-                          <p className="text-gray-400 text-sm">
-                            {githubUser.bio || "No bio available"}
-                          </p>
-                          <div className="flex gap-4 mt-2">
-                            <a
-                              href={`https://github.com/${githubUser.login}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
-                            >
-                              <ExternalLink size={14} />
-                              Profile
-                            </a>
-                          </div>
-                        </div>
-                      </>
-                    );
-                  })()}
-                </MotionWrapper>
+                {user && hasGitHubConnected(user) && (
+                  <div className="w-full md:w-[150px] overflow-hidden">
+                    <MotionWrapper
+                      className="bg-zinc-900/90 border border-zinc-800 rounded-lg p-2 flex flex-col sm:flex-row md:flex-col items-center gap-2 overflow-hidden h-full"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.15 }}
+                      wrapperClassName="w-full overflow-hidden"
+                    >
+                      {(() => {
+                        const githubUser = toGitHubUser(user);
+                        return (
+                          <>
+                            {githubUser.avatar_url && (
+                              <MotionImage
+                                src={githubUser.avatar_url}
+                                alt="GitHub Avatar"
+                                className="w-10 h-10 rounded-full"
+                                initial={{ scale: 0.8 }}
+                                animate={{ scale: 1 }}
+                                transition={{ duration: 0.2 }}
+                                wrapperClassName="flex-shrink-0"
+                              />
+                            )}
+                            <div className="flex flex-col items-center sm:items-start md:items-center text-center sm:text-left md:text-center">
+                              <h3 className="text-sm font-semibold">
+                                {githubUser.login}
+                              </h3>
+                              <a
+                                href={`https://github.com/${githubUser.login}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-400 hover:text-blue-300 text-xs flex items-center gap-1 mt-1"
+                              >
+                                <ExternalLink size={10} />
+                                GitHub Profile
+                              </a>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </MotionWrapper>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -905,7 +901,7 @@ export default function ProfilePage() {
         {/* Steam Profile Card - Outside of the main container */}
         {user && hasSteamConnected(user) && (
           <motion.div 
-            className="mt-8"
+            className="mt-4 mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -916,7 +912,7 @@ export default function ProfilePage() {
         )}
         
         {user.theme?.spotifyLink && (
-          <div className="mt-8">
+          <div className="mt-4 mb-8">
             <div className="rounded-xl">
               <SpotifyPlayer 
                 spotifyUrl={user.theme.spotifyLink} 

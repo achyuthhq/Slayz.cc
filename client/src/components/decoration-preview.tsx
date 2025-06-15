@@ -5,8 +5,8 @@ interface DecorationPreviewProps {
   className?: string;
 }
 
-// Updated to use local files instead of GitHub repository
-const DECORATION_BASE_URL = "/decorations";
+// Updated to use GitHub repository instead of local files
+const DECORATION_BASE_URL = "https://raw.githubusercontent.com/achyuth0/decos-rn/refs/heads/main";
 
 export function DecorationPreview({
   decoration,
@@ -20,7 +20,7 @@ export function DecorationPreview({
     <div
       className={`absolute inset-0 pointer-events-none ${className}`}
       style={{
-        transform: `scale(${decoration.animation.scale || 1.5})`, // Increased Scale for Larger Display
+        transform: `scale(${decoration.animation.scale || 1.6})`, // Increased scale for more prominent decorations
       }}
     >
       <img

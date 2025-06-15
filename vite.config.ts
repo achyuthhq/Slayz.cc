@@ -24,8 +24,8 @@ export default defineConfig({
     // Handle process.env reference in the client code
     "process.env": {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-      VITE_DISCORD_CLIENT_ID: JSON.stringify(process.env.VITE_DISCORD_CLIENT_ID || '1380086427139833906'),
-      VITE_DISCORD_REDIRECT_URI: JSON.stringify(process.env.VITE_DISCORD_REDIRECT_URI || 'http://localhost:3000/oauth2/authorize/callback'),
+      VITE_DISCORD_CLIENT_ID: JSON.stringify(process.env.VITE_DISCORD_CLIENT_ID || '1350091089398464574'),
+      VITE_DISCORD_REDIRECT_URI: JSON.stringify(process.env.VITE_DISCORD_REDIRECT_URI || 'https://slayz.cc/oauth2/authorize/callback'),
     },
   },
   build: {

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FaDiscord } from "react-icons/fa";
+import { FaDiscord, FaQuestionCircle } from "react-icons/fa";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -95,7 +95,16 @@ const formatActivity = (activity: DiscordActivity | null | undefined): string =>
   if (Array.isArray(activityData)) {
     console.log('Activity is an array with length:', activityData.length);
     if (activityData.length === 0) return 'Currently doing nothing!';
-    activityData = activityData[0]; // Use the first activity
+    
+    // Look for Spotify activity first
+    const spotifyActivity = activityData.find(act => 
+      act?.name?.toLowerCase() === 'spotify' || 
+      act?.applicationId === '123456789012345678' || // Spotify's Discord application ID
+      act?.assets?.largeImage?.includes('spotify')
+    );
+    
+    // Use Spotify activity if found, otherwise use the first activity
+    activityData = spotifyActivity || activityData[0];
   }
   
   // Handle empty object
@@ -104,10 +113,27 @@ const formatActivity = (activity: DiscordActivity | null | undefined): string =>
     return 'Currently doing nothing!';
   }
   
-  const name = activityData.name || '';
+  // Check for Spotify specifically
+  const isSpotify = 
+    activityData.name?.toLowerCase() === 'spotify' || 
+    activityData.applicationId === '123456789012345678' || // Spotify's Discord application ID
+    activityData.assets?.largeImage?.includes('spotify');
+  
+  if (isSpotify) {
+    const songName = activityData.details || '';
+    const artist = activityData.state || '';
+    const album = activityData.assets?.largeText || '';
+    
+    if (songName && artist) {
+      return `Listening to ${songName} by ${artist}${album ? ` on ${album}` : ''}`;
+    }
+  }
+  
+  // Extract activity properties, ensuring we handle all possible formats
+  const name = activityData.name || activityData.application_name || '';
   const type = activityData.type ?? 0; // Use nullish coalescing to handle 0 properly
-  const details = activityData.details || '';
-  const state = activityData.state || '';
+  const details = activityData.details || activityData.description || '';
+  const state = activityData.state || activityData.status || '';
   
   console.log('Activity parsed values:', { name, type, details, state });
   
@@ -115,14 +141,15 @@ const formatActivity = (activity: DiscordActivity | null | undefined): string =>
     return 'Currently doing nothing!';
   }
   
+  // Format based on activity type
   switch (type) {
     case 0: return `Playing ${name}${details ? `: ${details}` : ''}${state ? ` (${state})` : ''}`;
-    case 1: return `Streaming ${name}`;
+    case 1: return `Streaming ${name}${details ? `: ${details}` : ''}`;
     case 2: return `Listening to ${name}${details ? `: ${details}` : ''}${state ? ` (${state})` : ''}`;
-    case 3: return `Watching ${name}`;
-    case 4: return `${name}`;
-    case 5: return `Competing in ${name}`;
-    default: return name ? `${name}` : 'Currently doing nothing!';
+    case 3: return `Watching ${name}${details ? `: ${details}` : ''}`;
+    case 4: return `${name}${details ? `: ${details}` : ''}`;
+    case 5: return `Competing in ${name}${details ? `: ${details}` : ''}`;
+    default: return name ? `${name}${details ? `: ${details}` : ''}` : 'Currently doing nothing!';
   }
 };
 
@@ -147,7 +174,7 @@ export const DiscordIntegrationCard: React.FC<DiscordIntegrationCardProps> = ({
   isConnected,
   onConnect,
   onDisconnect,
-  connectUrl = "https://discord.com/oauth2/authorize?client_id=1380086427139833906&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback%2Fdiscord&response_type=code&scope=identify%20email",
+  connectUrl = "https://discord.com/oauth2/authorize?client_id=1350091089398464574&redirect_uri=https%3A%2F%2Fslayz.cc%2Fcallback%2Fdiscord&response_type=code&scope=identify%20email",
   isSettingsPage = false,
 }) => {
   // Refresh the timestamp when the component mounts
@@ -157,15 +184,31 @@ export const DiscordIntegrationCard: React.FC<DiscordIntegrationCardProps> = ({
     }
   }, [isConnected, user?.discordId]);
 
+  // Debug logging for Discord activity
+  useEffect(() => {
+    if (user?.discordActivity) {
+      console.log('Raw Discord activity data:', user.discordActivity);
+      try {
+        if (typeof user.discordActivity === 'string') {
+          console.log('Parsed activity:', JSON.parse(user.discordActivity));
+        }
+      } catch (e) {
+        console.log('Failed to parse activity string');
+      }
+    }
+  }, [user?.discordActivity]);
+
   // Use our custom hook to fetch real-time Discord status
   const { 
     status: liveStatus, 
     isLoading: isStatusLoading,
-    lastUpdated: statusLastUpdated
+    lastUpdated: statusLastUpdated,
+    isFallback
   } = useDiscordStatus({
     discordId: user?.discordId,
     enabled: isConnected && !!user?.discordId,
-    refreshInterval: 30000 // Check every 30 seconds
+    refreshInterval: 30000, // Check every 30 seconds
+    fallbackStatus: user.discordStatus || 'online' // Use stored status as fallback
   });
 
   // Use the live status if available, otherwise fall back to the stored status
@@ -183,6 +226,7 @@ export const DiscordIntegrationCard: React.FC<DiscordIntegrationCardProps> = ({
     discordId: user.discordId,
     storedStatus: user.discordStatus,
     liveStatus,
+    isFallback,
     statusLastUpdated: statusLastUpdated ? statusLastUpdated.toLocaleString() : 'none',
     activity: user.discordActivity,
     timestamp: user._timestamp ? new Date(user._timestamp).toLocaleString() : 'none'
@@ -190,35 +234,16 @@ export const DiscordIntegrationCard: React.FC<DiscordIntegrationCardProps> = ({
   
   // Determine the presence status color - force lowercase comparison and handle null/undefined
   const getStatusColor = (status: string | null | undefined): string => {
-    console.log('Raw status value:', status, typeof status);
+    if (!status) return "bg-gray-500"; // Default to gray for null/undefined
     
-    // Default to online if no status is provided (better user experience than gray)
-    if (!status) return "bg-green-500";
+    const normalizedStatus = status.toLowerCase().trim();
     
-    // Normalize status string for comparison
-    let normalizedStatus = '';
-    try {
-      normalizedStatus = status.toString().toLowerCase().trim();
-    } catch (e) {
-      console.error('Error normalizing status:', e);
-      return "bg-green-500"; // Default to online on error
-    }
+    if (normalizedStatus === "online") return "bg-green-500";
+    if (normalizedStatus === "idle") return "bg-yellow-500";
+    if (normalizedStatus === "dnd") return "bg-red-500";
+    if (normalizedStatus === "invisible" || normalizedStatus === "offline") return "bg-gray-500";
     
-    console.log('Normalized status:', normalizedStatus);
-    
-    // Enhanced status detection with fallbacks
-    if (normalizedStatus === 'online' || normalizedStatus.includes('online')) {
-      return "bg-green-500";
-    } else if (normalizedStatus === 'idle' || normalizedStatus.includes('idle') || normalizedStatus.includes('away')) {
-      return "bg-yellow-500";
-    } else if (normalizedStatus === 'dnd' || normalizedStatus === 'do_not_disturb' || normalizedStatus.includes('dnd') || normalizedStatus.includes('do not disturb')) {
-      return "bg-red-600";
-    } else if (normalizedStatus === 'offline' || normalizedStatus.includes('offline') || normalizedStatus.includes('invisible')) {
-      return "bg-gray-500";
-    }
-    
-    // Default to online for any unrecognized value - better UX than showing as offline
-    return "bg-green-500";
+    return "bg-gray-500"; // Default fallback
   };
   
   // Get the user avatar URL or fallback to a generated avatar
@@ -242,16 +267,29 @@ export const DiscordIntegrationCard: React.FC<DiscordIntegrationCardProps> = ({
   
   // Status indicator
   const renderStatusIndicator = () => {
+    const statusText = isFallback 
+      ? `Discord Status: ${currentStatus || 'Unknown'} (Best guess based on recent activity)`
+      : `Discord Status: ${currentStatus || 'Unknown'} ${statusLastUpdated ? `(Updated: ${statusLastUpdated.toLocaleTimeString()})` : ''}`;
+    
     return (
-      <div 
-        className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-[#111] ${getStatusColor(currentStatus)} ${(currentStatus?.toString().toLowerCase().trim() === 'online') ? 'animate-pulse' : ''}`}
-        title={`Discord Status: ${currentStatus || 'Unknown'} ${statusLastUpdated ? `(Updated: ${statusLastUpdated.toLocaleTimeString()})` : ''}`}
-      />
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div 
+              className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-[#111] dark:border-[#111] z-20 ${getStatusColor(currentStatus)}`}
+              aria-label={`Discord status: ${currentStatus || 'offline'}`}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{statusText}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   };
   
   return (
-    <div className="w-full mx-auto md:max-w-[90%]">
+    <div className="w-full overflow-hidden">
       {isConnected ? (
         <div 
           className="relative rounded-xl overflow-hidden backdrop-blur-[60px] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] shadow-[0px_20px_60px_rgba(0,0,0,0.4)] transition-all duration-300 hover:shadow-[0px_25px_65px_rgba(0,0,0,0.5)] p-3 sm:p-4"
@@ -274,8 +312,11 @@ export const DiscordIntegrationCard: React.FC<DiscordIntegrationCardProps> = ({
                 />
               </div>
               
-              {/* Status indicator */}
-              {renderStatusIndicator()}
+              {/* Status indicator - positioned precisely at bottom-right of avatar */}
+              <div 
+                className={`absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full border-2 border-[#111] dark:border-[#111] ${getStatusColor(currentStatus)}`}
+                title={`Discord Status: ${currentStatus || 'Offline'}`}
+              />
             </div>
             
             {/* User Details Section */}
@@ -307,23 +348,39 @@ export const DiscordIntegrationCard: React.FC<DiscordIntegrationCardProps> = ({
               </p>
               
               {/* Activity Status - Show dot only for actual activities */}
-              <div className="text-gray-300 text-sm mb-1 max-w-full">
-                {activityString === 'Currently doing nothing!' ? (
-                  <span className="truncate italic">{activityString}</span>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${getStatusColor(currentStatus)}`}></div>
-                    <span className="truncate italic">{activityString}</span>
-                  </div>
-                )}
+              <div className="text-gray-300 text-sm mb-1 max-w-full w-full sm:w-auto">
+                {(() => {
+                  try {
+                    if (activityString && activityString !== 'Currently doing nothing!') {
+                      return (
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full bg-green-500`}></div>
+                          <span className="truncate italic">{activityString}</span>
+                        </div>
+                      );
+                    } else {
+                      // Check if there's raw activity data that might not have been formatted correctly
+                      if (user.discordActivity && typeof user.discordActivity === 'object') {
+                        const rawActivity = user.discordActivity as any;
+                        if (rawActivity.details && rawActivity.state) {
+                          return (
+                            <div className="flex items-center gap-2">
+                              <div className={`w-2 h-2 rounded-full bg-green-500`}></div>
+                              <span className="truncate italic">
+                                Listening to {rawActivity.details} by {rawActivity.state}
+                              </span>
+                            </div>
+                          );
+                        }
+                      }
+                      return <span className="truncate italic">Currently doing nothing!</span>;
+                    }
+                  } catch (e) {
+                    console.error('Error rendering activity:', e);
+                    return <span className="truncate italic">Currently doing nothing!</span>;
+                  }
+                })()}
               </div>
-              
-              {/* Status last updated indicator */}
-              {statusLastUpdated && (
-                <p className="text-gray-500 text-xs mt-1">
-                  Status updated: {statusLastUpdated.toLocaleTimeString()}
-                </p>
-              )}
               
               {isSettingsPage && (
                 <Button
@@ -367,12 +424,13 @@ export const DiscordIntegrationCard: React.FC<DiscordIntegrationCardProps> = ({
 // Profile page version with motion animations
 export const AnimatedDiscordCard: React.FC<DiscordIntegrationCardProps> = (props) => {
   return (
-    <div className="w-full mx-auto">
+    <div className="w-full overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.5 }}
+        style={{ width: '100%', overflow: 'hidden' }}
       >
         <DiscordIntegrationCard {...props} />
       </motion.div>

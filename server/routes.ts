@@ -1,10 +1,10 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "node:http";
 import { WebSocketServer, WebSocket } from 'ws';
 import { setupAuth } from "./auth";
 import { storage } from "./pg-storage";
 import { insertSocialLinkSchema, insertSubscriptionSchema, insertProfileSchema } from "../shared/pg-schema";
-import { subscriptions, users } from "../shared/pg-schema";
+import { subscriptions, users, socialLinks } from "../shared/pg-schema";
 import multer from "multer";
 import path from "node:path";
 import express from 'express';
@@ -28,6 +28,20 @@ import { Resend } from 'resend';
 import { passwordResetTokens } from './schema';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import { Session, SessionData } from 'express-session';
+
+// Extend the Session interface to include our custom properties
+declare module 'express-session' {
+  interface Session {
+    user?: {
+      id: string;
+      username: string;
+      email: string;
+    };
+    isAdmin?: boolean;
+    adminLastActivity?: number;
+  }
+}
 
 // Initialize Stripe with secret key
 // Only initialize Stripe if the key is available
@@ -287,25 +301,66 @@ function requirePremiumFeature(feature: string) {
   };
 }
 
-// Add validation for social links limit
-async function validateSocialLinksLimit(req: any, res: any, next: any) {
-  if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+// Middleware to validate social links limit
+async function validateSocialLinksLimit(req: Request, res: Response, next: NextFunction) {
+  try {
+    // Get the user ID from the session
+    const userId = req.session.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
-  const isPremium = req.user.subscriptionStatus === 'premium';
-  if (!isPremium) {
-    const currentLinks = await storage.getUserSocialLinks(req.user.id);
-    if (currentLinks.length >= 5) {
+    // Check if the user is premium
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, userId),
+      columns: {
+        subscriptionStatus: true,
+      },
+    });
+
+    const isPremium = user?.subscriptionStatus === "premium";
+    
+    // Get the current number of social links for this user
+    const userLinks = await db.query.socialLinks.findMany({
+      where: eq(socialLinks.userId, userId),
+    });
+
+    // Get the platform being added from the request body
+    const { icon } = req.body;
+
+    // Check if the user already has a link for this platform (except for website)
+    if (icon && icon !== 'website') {
+      const existingPlatformLink = userLinks.find((link) => link.icon === icon);
+      if (existingPlatformLink) {
+        return res.status(403).json({ 
+          error: `You already have a link for this platform. Each social platform can only be added once.` 
+        });
+      }
+    }
+
+    // For website links, check if non-premium users already have one
+    if (icon === 'website' && !isPremium) {
+      const websiteLinks = userLinks.filter((link) => link.icon === 'website');
+      if (websiteLinks.length >= 1) {
+        return res.status(403).json({ 
+          error: `You have reached the maximum number of website links for a free account. Upgrade to Premium to add more.` 
+        });
+      }
+    }
+
+    // For free users, check if they've reached the maximum total links limit
+    if (!isPremium && userLinks.length >= 5) {
       return res.status(403).json({ 
-        error: "Social links limit reached",
-        feature: "socials.unlimited",
-        message: "Free users are limited to 5 social links. Upgrade to Premium for unlimited links.",
-        upgrade: true,
-        currentCount: currentLinks.length,
-        maxCount: 5
+        error: `You have reached the maximum number of social links for a free account. Upgrade to Premium to add more.` 
       });
     }
+
+    // If all checks pass, proceed to the next middleware
+    next();
+  } catch (error) {
+    console.error("Error validating social links limit:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
-  next();
 }
 
 // Helper function to retry API calls with exponential backoff
@@ -413,10 +468,10 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: "Valid Discord ID is required" });
       }
 
-      // Check if we have a recent cached status (less than 2 minutes old)
+      // Check if we have a recent cached status (less than 30 seconds old)
       const cachedStatus = discordStatusCache.get(discordId);
       const now = Date.now();
-      if (cachedStatus && (now - cachedStatus.timestamp < 120000)) {
+      if (cachedStatus && (now - cachedStatus.timestamp < 30000)) {
         console.log(`Returning cached Discord status for ID ${discordId}: ${cachedStatus.status}`);
         return res.json({ status: cachedStatus.status });
       }
@@ -427,45 +482,27 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: "No Discord account connected" });
       }
 
-      // Get Discord bot token from environment variables
-      const botToken = process.env.DISCORD_BOT_TOKEN;
-      if (!botToken) {
-        console.error("Discord bot token not configured");
-        return res.status(500).json({ error: "Discord integration not properly configured" });
-      }
-
-      // Fetch the user's presence from Discord API
+      // For Discord OAuth2, we need to use the user's access token
+      // This is typically stored when they connect their Discord account
+      // We'll use the status stored in the user object if available
+      let status: DiscordStatus = 'offline';
+      
       try {
-        const response = await fetch(`https://discord.com/api/v10/users/${discordId}/presence`, {
-          headers: {
-            Authorization: `Bot ${botToken}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          if (response.status === 404) {
-            // User not found or not in any mutual servers with the bot
-            console.warn(`Discord user ${discordId} not found or not in mutual servers`);
-            
-            // Cache the offline status
-            discordStatusCache.set(discordId, {
-              status: 'offline',
-              timestamp: now
-            });
-            
-            return res.json({ status: 'offline' });
-          }
+        // Use the stored Discord status if available
+        if (user.discordStatus) {
+          status = user.discordStatus as DiscordStatus;
+        } else {
+          // Make a best effort to determine user's status
+          // This is a simplified approach since we don't have Gateway access
           
-          console.error(`Discord API error: ${response.status}`);
-          return res.status(response.status).json({ 
-            error: "Failed to fetch Discord status",
-            details: `Discord API returned ${response.status}`
-          });
+          // Check when the user was last active based on available timestamps
+          const lastActive = user.lastOnline ? new Date(user.lastOnline).getTime() : 0;
+          const fiveMinutesAgo = now - 5 * 60 * 1000;
+          
+          if (lastActive > fiveMinutesAgo) {
+            status = 'online';
+          }
         }
-
-        const data = await response.json();
-        const status = data.status || 'offline';
         
         // Cache the status
         discordStatusCache.set(discordId, {
@@ -476,7 +513,14 @@ export function registerRoutes(app: Express): Server {
         return res.json({ status });
       } catch (error) {
         console.error("Error fetching Discord status:", error);
-        return res.status(500).json({ error: "Failed to fetch Discord status" });
+        
+        // Cache the offline status
+        discordStatusCache.set(discordId, {
+          status: 'offline',
+          timestamp: now
+        });
+        
+        return res.json({ status: 'offline' });
       }
     } catch (error) {
       console.error("Error in Discord status endpoint:", error);

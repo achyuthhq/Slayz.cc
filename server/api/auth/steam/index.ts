@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     // Determine the return URL based on environment
     const isProduction = process.env.NODE_ENV === 'production';
-    const host = isProduction ? 'https://slayz.cc' : 'http://localhost:3000';
+    const host = 'https://slayz.cc';
     const returnUrl = `${host}/api/auth/steam/callback`;
     
     // Construct the Steam OpenID URL

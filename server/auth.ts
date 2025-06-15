@@ -278,7 +278,7 @@ export function setupAuth(app: Express) {
       {
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: `${process.env.REPL_SLUG ? `https://b6b18d93-c6f9-4491-b11d-b0ede2b0e0f5-00-2v7uikojgaooj.sisko.replit.dev` : "http://localhost:3000"}/api/auth/github/callback`,
+        callbackURL: `${process.env.NODE_ENV === "production" ? "https://slayz.cc" : "https://slayz.cc"}/api/auth/github/callback`,
         passReqToCallback: true,
       },
       async (

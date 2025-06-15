@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     }
     
     // Log the redirect URI being used
-    const redirectUri = process.env.DISCORD_REDIRECT_URI || 'http://localhost:3000/callback/discord';
+    const redirectUri = process.env.DISCORD_REDIRECT_URI || 'https://slayz.cc/callback/discord';
     console.log('Using redirect URI:', redirectUri);
     
     // Step 1: Exchange code for token
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        client_id: process.env.DISCORD_CLIENT_ID || '1380086427139833906',
+        client_id: process.env.DISCORD_CLIENT_ID || '1350091089398464574',
         client_secret: process.env.DISCORD_CLIENT_SECRET || 'your-client-secret-placeholder',
         grant_type: 'authorization_code',
         code: code,

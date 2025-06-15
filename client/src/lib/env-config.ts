@@ -14,9 +14,9 @@ type EnvConfig = {
 
 // Default fallback values
 const defaultConfig: EnvConfig = {
-  DISCORD_CLIENT_ID: '1380086427139833906',
-  DISCORD_REDIRECT_URI: 'http://localhost:3000/oauth2/authorize/callback',
-  API_URL: 'http://localhost:3000/api',
+  DISCORD_CLIENT_ID: '1350091089398464574',
+  DISCORD_REDIRECT_URI: 'https://slayz.cc/oauth2/authorize/callback',
+  API_URL: 'https://slayz.cc/api',
   IS_DEVELOPMENT: false
 };
 

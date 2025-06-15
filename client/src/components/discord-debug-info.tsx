@@ -310,7 +310,7 @@ export default function DiscordDebugInfo({ discordUser, className = '' }: Discor
               <li>
                 Test your OAuth URL directly in browser:
                 <div className="mt-1 p-2 bg-gray-200 dark:bg-gray-700 rounded break-all">
-                  {typeof window !== 'undefined' ? `https://discord.com/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || '1380086427139833906'}&redirect_uri=${encodeURIComponent(process.env.NEXT_PUBLIC_DISCORD_REDIRECT_URI || 'http://localhost:3000/callback/discord')}&response_type=code&scope=identify` : 'Loading...'}
+                  {typeof window !== 'undefined' ? `https://discord.com/oauth2/authorize?client_id=${process.env.DISCORD_CLIENT_ID || '1350091089398464574'}&redirect_uri=${encodeURIComponent(process.env.NEXT_PUBLIC_DISCORD_REDIRECT_URI || 'http://localhost:3000/callback/discord')}&response_type=code&scope=identify` : 'Loading...'}
                 </div>
               </li>
               <li>

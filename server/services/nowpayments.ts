@@ -136,6 +136,55 @@ export async function getPaymentStatus(paymentId: string): Promise<NOWPaymentsPa
   }
 }
 
+// Add new function to check payment status by invoice ID
+export async function getPaymentStatusByInvoiceId(invoiceId: string): Promise<{
+  payment_status: string;
+  payment_id?: string;
+  pay_address?: string;
+  price_amount?: number;
+}> {
+  const config = getNOWPaymentsConfig();
+  
+  try {
+    // First, get the invoice status
+    const response = await axios.get(
+      `https://api.nowpayments.io/v1/invoice/${invoiceId}`,
+      {
+        headers: {
+          'x-api-key': config.apiKey,
+        },
+      }
+    );
+    
+    // If the invoice has a payment_id, get the detailed payment status
+    if (response.data && response.data.payment_id) {
+      const paymentResponse = await axios.get(
+        `https://api.nowpayments.io/v1/payment/${response.data.payment_id}`,
+        {
+          headers: {
+            'x-api-key': config.apiKey,
+          },
+        }
+      );
+      
+      return {
+        payment_status: paymentResponse.data.payment_status,
+        payment_id: paymentResponse.data.payment_id,
+        pay_address: paymentResponse.data.pay_address,
+        price_amount: paymentResponse.data.price_amount
+      };
+    }
+    
+    // If no payment_id yet, the payment hasn't been initiated
+    return {
+      payment_status: 'waiting'
+    };
+  } catch (error) {
+    console.error('Error checking NOWPayments invoice status:', error);
+    throw new Error('Failed to check invoice status');
+  }
+}
+
 // Verify IPN signature
 export function verifyIPNSignature(
   request: { headers: Record<string, string | undefined>; body: any },

@@ -428,4 +428,15 @@ See `.env.example` for a list of required environment variables.
 
 ## License
 
-[MIT](LICENSE) 
+[MIT](LICENSE)
+
+## Decorations
+
+Profile decorations are loaded from a GitHub repository instead of being stored locally. This significantly reduces the repository size (over 400MB of decoration images) while still providing all decoration options.
+
+The decorations are loaded from:
+```
+https://raw.githubusercontent.com/achyuth0/decos-rn/refs/heads/main/
+```
+
+If you need to add new decorations, add them to the GitHub repository and update the `DECORATION_LIST` in `client/src/components/decoration-selector.tsx`. 

@@ -30,7 +30,6 @@ import ResetPasswordPage from "@/pages/reset-password";
 import LoadingProvider from "./hooks/use-loading";
 import "./styles/dnd.css";
 
-
 function DashboardRoutes() {
   return (
     <DashboardLayout>

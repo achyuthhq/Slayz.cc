@@ -22,9 +22,9 @@ export default async function handler(req, res) {
     console.log('[Discord Token API] Processing authorization code:', code.substring(0, 6) + '...');
 
     // Discord OAuth configuration
-    const clientId = process.env.DISCORD_CLIENT_ID || '1380086427139833906';
+    const clientId = process.env.DISCORD_CLIENT_ID || '1350091089398464574';
     const clientSecret = process.env.DISCORD_CLIENT_SECRET || ''; // You must set your real client secret in environment variables!
-    const redirectUri = process.env.DISCORD_REDIRECT_URI || 'http://localhost:3000/callback/discord';
+    const redirectUri = process.env.DISCORD_REDIRECT_URI || 'https://slayz.cc/callback/discord';
 
     // Warn if using empty client secret
     if (!clientSecret) {

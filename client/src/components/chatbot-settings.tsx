@@ -21,13 +21,13 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Label } from "./ui/label";
-import { themeSchema } from "@shared/schema";
+import { Theme, themeSchema } from "@shared/schema";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
-const chatbotSchema = themeSchema.pick({
-  chatbot: true,
-}).extend({
+// Define the chatbot schema with the new buttonColorType field
+const chatbotSchema = z.object({
   chatbot: z.object({
     enabled: z.boolean(),
     systemPrompt: z.string().optional(),
@@ -182,6 +182,20 @@ export function ChatbotSettingsForm({
                     />
                   </div>
                 </FormControl>
+                <FormDescription>
+                  Choose a color for the chatbot button.
+                </FormDescription>
+                <div className="mt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => field.onChange("#7C3AED")}
+                    className="text-xs"
+                  >
+                    Reset to Default Purple
+                  </Button>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

@@ -9,8 +9,8 @@ import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Sparkles, Crown } from "lucide-react";
 
-// Updated to use local files instead of GitHub repository
-const DECORATION_BASE_URL = "/decorations";
+// Updated to use GitHub repository instead of local files
+const DECORATION_BASE_URL = "https://raw.githubusercontent.com/achyuth0/decos-rn/refs/heads/main";
 
 const DECORATION_LIST = [
   "a_hint_of_clove.png",

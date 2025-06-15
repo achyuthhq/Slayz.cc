@@ -327,6 +327,20 @@ export default function SocialsPage() {
           // Try to get more detailed error information
           const errorData = await res.json().catch(() => ({}));
           console.error("Error response from server:", errorData);
+          
+          // Handle specific error cases
+          if (errorData.error?.includes("already have a link for this platform")) {
+            throw new Error("You already have a link for this platform. Each social platform can only be added once.");
+          } else if (errorData.error?.includes("reached the maximum number of website links")) {
+            setPremiumFeatureName("Multiple Website Links");
+            setShowPremiumDialog(true);
+            throw new Error("Upgrade to Premium to add multiple website links.");
+          } else if (errorData.error?.includes("reached the maximum number of social links")) {
+            setPremiumFeatureName("Additional Social Links");
+            setShowPremiumDialog(true);
+            throw new Error("Upgrade to Premium to add more than 5 social links.");
+          }
+          
           throw new Error(errorData.error || "Failed to create social link");
         }
         
@@ -439,6 +453,27 @@ export default function SocialsPage() {
       setPremiumFeatureName("Additional Social Links");
       setShowPremiumDialog(true);
       return;
+    }
+
+    // Check if this platform is already in use (except for website)
+    if (platformId !== 'website') {
+      const existingPlatform = userLinks.find(link => link.icon === platformId);
+      if (existingPlatform) {
+        toast({
+          title: "Platform already in use",
+          description: `You already have a ${platformId} link. Each social platform can only be added once.`,
+          variant: "destructive",
+        });
+        return;
+      }
+    } else if (!isPremium) {
+      // For non-premium users, check if they already have a website link
+      const websiteLinks = userLinks.filter(link => link.icon === 'website');
+      if (websiteLinks.length >= 1) {
+        setPremiumFeatureName("Multiple Website Links");
+        setShowPremiumDialog(true);
+        return;
+      }
     }
 
     setSelectedPlatform(platformId);
@@ -592,16 +627,25 @@ export default function SocialsPage() {
             Link your social media profiles.
           </h1>
           <p className="text-white/70 mt-1">Pick a social media to add to your profile.</p>
-          {!isPremium && (
-            <div className="mt-2 p-3 bg-black/20 border border-white/5 rounded text-sm text-white/70">
-              Free users can add up to 5 social links. Upgrade to Premium for unlimited social links.
-              {links.length > 0 && (
+          <div className="mt-2 p-3 bg-black/20 border border-white/5 rounded text-sm text-white/70">
+            {!isPremium ? (
+              <>
+                Free users can add up to 5 social links and only one website link. Upgrade to Premium for unlimited social links and multiple website links.
+                {userLinks.length > 0 && (
+                  <div className="mt-1">
+                    You have used {userLinks.length}/5 available slots.
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                Premium users can add unlimited social links and multiple custom website links.
                 <div className="mt-1">
-                  You have used {links.length}/5 available slots.
+                  <span className="text-green-400">Note:</span> Each standard social platform can only be added once, but you can add multiple custom website links.
                 </div>
-              )}
-            </div>
-          )}
+              </>
+            )}
+          </div>
         </div>
 
         {/* Icon Color Settings Card */}

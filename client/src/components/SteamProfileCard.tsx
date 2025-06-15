@@ -106,7 +106,7 @@ const SteamProfileCard: React.FC<SteamProfileCardProps> = ({ user, className = '
   return (
     <div className={className}>
       <div 
-        className="backdrop-blur-xl bg-[#171a21]/70 rounded-lg overflow-hidden shadow-lg border border-[#66c0f4]/30 w-full
+        className="backdrop-blur-xl bg-[#171a21]/70 rounded-lg overflow-hidden shadow-lg border border-[#66c0f4]/30 w-full max-w-[700px] mx-auto
           transition-all duration-300 hover:shadow-[0_10px_30px_rgba(102,192,244,0.2)] hover:scale-[1.02] hover:border-[#66c0f4]/50"
         style={{ 
           perspective: "1200px",

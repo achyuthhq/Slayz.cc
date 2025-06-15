@@ -31,8 +31,8 @@ export default function envPlugin(): Plugin {
         
         // Add Discord specific vars with fallbacks
         const discordVars = {
-          DISCORD_CLIENT_ID: process.env.VITE_DISCORD_CLIENT_ID || '1380086427139833906',
-          DISCORD_REDIRECT_URI: process.env.VITE_DISCORD_REDIRECT_URI || 'http://localhost:3000/oauth2/authorize/callback',
+          DISCORD_CLIENT_ID: process.env.VITE_DISCORD_CLIENT_ID || '1350091089398464574',
+          DISCORD_REDIRECT_URI: process.env.VITE_DISCORD_REDIRECT_URI || 'https://slayz.cc/oauth2/authorize/callback',
           IS_DEVELOPMENT: process.env.NODE_ENV === 'development'
         };
         
@@ -55,8 +55,8 @@ export default function envPlugin(): Plugin {
     transformIndexHtml() {
       // Get environment variables for injecting into HTML
       const discordVars = {
-        DISCORD_CLIENT_ID: process.env.VITE_DISCORD_CLIENT_ID || '1380086427139833906',
-        DISCORD_REDIRECT_URI: process.env.VITE_DISCORD_REDIRECT_URI || 'http://localhost:3000/oauth2/authorize/callback'
+        DISCORD_CLIENT_ID: process.env.VITE_DISCORD_CLIENT_ID || '1350091089398464574',
+        DISCORD_REDIRECT_URI: process.env.VITE_DISCORD_REDIRECT_URI || 'https://slayz.cc/oauth2/authorize/callback'
       };
       
       // Create script to inject into HTML

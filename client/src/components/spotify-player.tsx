@@ -27,7 +27,7 @@ export function SpotifyPlayer({ spotifyUrl, displayText = "Favourite Song" }: Sp
           </div>
           <div className="relative overflow-hidden rounded-lg">
             <iframe
-              src={`https://open.spotify.com/embed/${spotifyUrl.split('.com/')[1]}`}
+              src={`https://open.spotify.com/embed/${spotifyUrl.split('.com/')[1]}?utm_source=generator&theme=0`}
               width="100%"
               height="152"
               frameBorder="0"

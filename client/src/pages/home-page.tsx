@@ -610,7 +610,7 @@ export default function HomePage() {
                     </div>
 
                     {user.theme?.decoration?.enabled && (
-                      <div className="absolute w-28 sm:w-36 h-28 sm:h-36 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+                      <div className="absolute w-[150px] sm:w-[150px] h-[150px] sm:h-[150px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
                         <DecorationPreview
                           decoration={user.theme.decoration}
                           className="w-full h-full"
