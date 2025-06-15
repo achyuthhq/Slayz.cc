@@ -18,6 +18,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "client", "src"),
       "@shared": path.resolve(__dirname, "shared"), // ✅ Fix alias resolution
+      "gsap": path.resolve(__dirname, "node_modules/gsap"), // Add direct path to GSAP
     },
   },
   define: {
@@ -31,6 +32,13 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist/public"), // ✅ Ensure correct output path
     emptyOutDir: true,
+    rollupOptions: {
+      // Explicitly include gsap in the bundle
+      external: [],
+    }
+  },
+  optimizeDeps: {
+    include: ['gsap'], // Ensure GSAP is properly included
   },
   server: {
     port: 5173,
