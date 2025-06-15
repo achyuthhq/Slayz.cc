@@ -12,6 +12,7 @@ const externalModules = [
   'drizzle-orm',
   'express',
   'express-session',
+  'lightningcss',
   'node:http', // Node.js built-in modules
   'node:fs',
   'node:path',
