@@ -415,4 +415,3 @@ woolgathering.png
 yoru_dimensional_drift.png
 zombie_food.png
 zombie_food_purple.png
-test.png
