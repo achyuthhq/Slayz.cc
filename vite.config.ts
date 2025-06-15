@@ -18,7 +18,11 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "client", "src"),
       "@shared": path.resolve(__dirname, "shared"), // ✅ Fix alias resolution
+      // Add alias to fix React version conflicts
+      "react": path.resolve(__dirname, "node_modules/react"),
+      "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
     },
+    dedupe: ['react', 'react-dom'], // Ensure only one copy of React is used
   },
   define: {
     // Handle process.env reference in the client code
@@ -31,16 +35,18 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist/public"), // ✅ Ensure correct output path
     emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'gsap': ['gsap']
-        }
-      }
+    commonjsOptions: {
+      // Fix for packages that might cause issues
+      transformMixedEsModules: true,
     }
   },
   optimizeDeps: {
-    include: ['gsap'], // Ensure GSAP is properly included
+    // Force packages to use project's React version
+    include: ['react', 'react-dom'],
+    esbuildOptions: {
+      // Needed to prevent version conflicts
+      preserveSymlinks: true,
+    }
   },
   server: {
     port: 5173,

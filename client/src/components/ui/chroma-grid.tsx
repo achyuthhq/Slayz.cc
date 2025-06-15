@@ -10,6 +10,54 @@ export interface ChromaGridItem {
   url?: string;
 }
 
+// Fallback animation implementation without GSAP
+const createFallbackAnimator = () => {
+  return {
+    quickSetter: (el: HTMLElement, prop: string, unit: string) => {
+      return (value: number) => {
+        el.style.setProperty(prop, `${value}${unit}`);
+      };
+    },
+    to: (target: any, config: any) => {
+      // Simple animation fallback
+      if (config.onUpdate) {
+        const startValues = { ...target };
+        const startTime = Date.now();
+        const duration = (config.duration || 0.3) * 1000;
+        
+        const animate = () => {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          
+          // Simple linear interpolation
+          Object.keys(config).forEach(key => {
+            if (key !== 'duration' && key !== 'onUpdate' && key !== 'ease' && key !== 'overwrite') {
+              target[key] = startValues[key] + (config[key] - startValues[key]) * progress;
+            }
+          });
+          
+          config.onUpdate();
+          
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          }
+        };
+        
+        requestAnimationFrame(animate);
+      } else if (target instanceof HTMLElement) {
+        // Direct DOM animation
+        if (config.opacity !== undefined) {
+          target.style.opacity = config.opacity;
+          target.style.transition = `opacity ${config.duration || 0.3}s`;
+        }
+      }
+      
+      // Return empty object to mimic GSAP's return
+      return {};
+    }
+  };
+};
+
 export const ChromaGrid = ({
   items,
   className = "",
@@ -34,32 +82,22 @@ export const ChromaGrid = ({
   const setX = useRef<any>(null);
   const setY = useRef<any>(null);
   const pos = useRef({ x: 0, y: 0 });
-  const [gsapLoaded, setGsapLoaded] = useState(false);
-  const gsapRef = useRef<any>(null);
+  const animatorRef = useRef(createFallbackAnimator());
 
   useEffect(() => {
-    import('gsap').then((gsapModule) => {
-      gsapRef.current = gsapModule;
-      setGsapLoaded(true);
-      
-      const el = rootRef.current;
-      if (!el) return;
-      
-      setX.current = gsapModule.gsap.quickSetter(el, "--x", "px");
-      setY.current = gsapModule.gsap.quickSetter(el, "--y", "px");
-      const { width, height } = el.getBoundingClientRect();
-      pos.current = { x: width / 2, y: height / 2 };
-      setX.current(pos.current.x);
-      setY.current(pos.current.y);
-    }).catch(err => {
-      console.error("Failed to load GSAP:", err);
-    });
+    const el = rootRef.current;
+    if (!el) return;
+    
+    setX.current = animatorRef.current.quickSetter(el, "--x", "px");
+    setY.current = animatorRef.current.quickSetter(el, "--y", "px");
+    const { width, height } = el.getBoundingClientRect();
+    pos.current = { x: width / 2, y: height / 2 };
+    setX.current(pos.current.x);
+    setY.current(pos.current.y);
   }, []);
 
   const moveTo = (x: number, y: number) => {
-    if (!gsapLoaded || !gsapRef.current) return;
-    
-    gsapRef.current.gsap.to(pos.current, {
+    animatorRef.current.to(pos.current, {
       x,
       y,
       duration: damping,
@@ -73,22 +111,22 @@ export const ChromaGrid = ({
   };
 
   const handleMove = (e: React.PointerEvent) => {
-    if (!gsapLoaded || !gsapRef.current) return;
-    
     const r = rootRef.current?.getBoundingClientRect();
     if (!r) return;
     moveTo(e.clientX - r.left, e.clientY - r.top);
-    gsapRef.current.gsap.to(fadeRef.current, { opacity: 0, duration: 0.25, overwrite: true });
+    if (fadeRef.current) {
+      animatorRef.current.to(fadeRef.current, { opacity: 0, duration: 0.25, overwrite: true });
+    }
   };
 
   const handleLeave = () => {
-    if (!gsapLoaded || !gsapRef.current) return;
-    
-    gsapRef.current.gsap.to(fadeRef.current, {
-      opacity: 1,
-      duration: fadeOut,
-      overwrite: true,
-    });
+    if (fadeRef.current) {
+      animatorRef.current.to(fadeRef.current, {
+        opacity: 1,
+        duration: fadeOut,
+        overwrite: true,
+      });
+    }
   };
 
   const handleCardClick = (url?: string) => {
