@@ -1,0 +1,33 @@
+
+name = "lynk-bio"
+compatibility_date = "2023-09-01"
+compatibility_flags = ["nodejs_compat"]
+main = "dist/index.mjs"
+
+[env.production]
+vars = { ENV = "production" }
+
+[site]
+bucket = "dist/public"
+
+[build]
+command = """
+npm run build && \
+npx esbuild server/index.ts \
+  --format=esm \
+  --bundle \
+  --platform=node \
+  --outfile=dist/index.mjs \
+  --external:node:* \
+  --external:lightningcss \
+  --external:@babel/preset-typescript/package.json \
+  --inject:./node-globals-shim.js \
+  --loader:.wasm=binary \
+  --main-fields=browser,module,main
+"""
+
+[dev]
+port = 3000
+
+[placement]
+mode = "smart"

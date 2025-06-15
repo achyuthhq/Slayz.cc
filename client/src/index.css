@@ -1,0 +1,713 @@
+/* Import font files first to avoid CSS warnings */
+@import "@fontsource/dm-sans/400.css";
+@import "@fontsource/dm-sans/500.css";
+@import "@fontsource/dm-sans/700.css";
+@import "@fontsource/unbounded/700.css";
+
+/* Optimize animations with hardware acceleration */
+.translate-y-negative {
+  transform: translateY(-20px) translateZ(0);
+  will-change: transform, opacity;
+}
+
+.fade-enter {
+  opacity: 0;
+  transform: translateY(0) translateZ(0);
+  will-change: opacity;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Add image glow animation */
+@keyframes image-glow {
+  0% {
+    opacity: 0.6;
+    transform: translateZ(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateZ(0);
+  }
+  100% {
+    opacity: 0.6;
+    transform: translateZ(0);
+  }
+}
+
+.animate-image-glow {
+  animation: image-glow 5s ease-in-out infinite;
+  will-change: opacity;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans font-bold;
+  }
+
+  .gradient-circle {
+    @apply fixed rounded-full opacity-30 blur-3xl pointer-events-none w-full h-full;
+    background: radial-gradient(circle at center, var(--gradient-start) 0%, var(--gradient-end) 70%);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  .gradient-circle-purple {
+    --gradient-start: rgba(147, 51, 234, 0.4);
+    --gradient-end: rgba(79, 70, 229, 0);
+    z-index: 0;
+  }
+
+  .gradient-circle-blue {
+    --gradient-start: rgba(166, 49, 214, 0.4);
+    --gradient-end: rgba(144, 52, 181, 0);
+    z-index: 0;
+  }
+
+  .gradient-text {
+    @apply relative bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60;
+    z-index: 1;
+  }
+
+  .glow-name {
+    @apply font-bold;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7),
+                 0 0 20px rgba(255, 255, 255, 0.5),
+                 0 0 30px rgba(255, 255, 255, 0.3);
+    animation: pulse 2s infinite;
+  }
+
+  /* Enhanced social icon glow effects with multiple layers */
+  .social-icon {
+    @apply transition-all duration-300 transform;
+  }
+
+  .social-icon svg {
+    @apply transition-all duration-300;
+  }
+
+  /* Multiple layers of glow for better visibility */
+  .social-icon-github:hover svg {
+    filter: 
+      drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))
+      drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))
+      drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+    transform: scale(1.15);
+  }
+
+  .social-icon-gitlab:hover svg {
+    filter: 
+      drop-shadow(0 0 4px rgba(252, 109, 38, 0.8))
+      drop-shadow(0 0 8px rgba(252, 109, 38, 0.6))
+      drop-shadow(0 0 12px rgba(252, 109, 38, 0.4));
+    transform: scale(1.15);
+  }
+
+  .social-icon-linkedin:hover svg {
+    filter: 
+      drop-shadow(0 0 4px rgba(0, 119, 181, 0.8))
+      drop-shadow(0 0 8px rgba(0, 119, 181, 0.6))
+      drop-shadow(0 0 12px rgba(0, 119, 181, 0.4));
+    transform: scale(1.15);
+  }
+
+  .social-icon-instagram:hover svg {
+    filter: 
+      drop-shadow(0 0 4px rgba(228, 64, 95, 0.8))
+      drop-shadow(0 0 8px rgba(228, 64, 95, 0.6))
+      drop-shadow(0 0 12px rgba(228, 64, 95, 0.4));
+    transform: scale(1.15);
+  }
+
+  .social-icon-youtube:hover svg {
+    filter: 
+      drop-shadow(0 0 4px rgba(255, 0, 0, 0.8))
+      drop-shadow(0 0 8px rgba(255, 0, 0, 0.6))
+      drop-shadow(0 0 12px rgba(255, 0, 0, 0.4));
+    transform: scale(1.15);
+  }
+
+  .social-icon-tiktok:hover svg {
+    filter: 
+      drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))
+      drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))
+      drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+    transform: scale(1.15);
+  }
+
+  .social-icon-bitcoin:hover svg {
+    filter: 
+      drop-shadow(0 0 4px rgba(247, 147, 26, 0.8))
+      drop-shadow(0 0 8px rgba(247, 147, 26, 0.6))
+      drop-shadow(0 0 12px rgba(247, 147, 26, 0.4));
+    transform: scale(1.15);
+  }
+
+  .social-icon-litecoin:hover svg {
+    filter: 
+      drop-shadow(0 0 4px rgba(52, 93, 157, 0.8))
+      drop-shadow(0 0 8px rgba(52, 93, 157, 0.6))
+      drop-shadow(0 0 12px rgba(52, 93, 157, 0.4));
+    transform: scale(1.15);
+  }
+
+  .social-icon-usdt:hover svg {
+    filter: 
+      drop-shadow(0 0 4px rgba(38, 161, 123, 0.8))
+      drop-shadow(0 0 8px rgba(38, 161, 123, 0.6))
+      drop-shadow(0 0 12px rgba(38, 161, 123, 0.4));
+    transform: scale(1.15);
+  }
+
+  .social-icon-website:hover svg {
+    filter: 
+      drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))
+      drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))
+      drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+    transform: scale(1.15);
+  }
+
+  /* Base glow effect for non-hover state */
+  .social-icon-github svg { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); }
+  .social-icon-gitlab svg { filter: drop-shadow(0 0 2px rgba(252, 109, 38, 0.4)); }
+  .social-icon-linkedin svg { filter: drop-shadow(0 0 2px rgba(0, 119, 181, 0.4)); }
+  .social-icon-instagram svg { filter: drop-shadow(0 0 2px rgba(228, 64, 95, 0.4)); }
+  .social-icon-youtube svg { filter: drop-shadow(0 0 2px rgba(255, 0, 0, 0.4)); }
+  .social-icon-tiktok svg { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); }
+  .social-icon-bitcoin svg { filter: drop-shadow(0 0 2px rgba(247, 147, 26, 0.4)); }
+  .social-icon-litecoin svg { filter: drop-shadow(0 0 2px rgba(52, 93, 157, 0.4)); }
+  .social-icon-usdt svg { filter: drop-shadow(0 0 2px rgba(38, 161, 123, 0.4)); }
+  .social-icon-website svg { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); }
+
+
+  @keyframes pulse {
+    0%, 100% {
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.7),
+                   0 0 20px rgba(255, 255, 255, 0.5),
+                   0 0 30px rgba(255, 255, 255, 0.3);
+    }
+    50% {
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.9),
+                   0 0 25px rgba(255, 255, 255, 0.7),
+                   0 0 35px rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-x 3s linear infinite;
+  }
+
+  @keyframes gradient-x {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  /* New glassmorphism card style */
+  .glass-card-elevated {
+    backdrop-filter: blur(60px);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 20px 60px, rgba(255, 255, 255, 0.15) 0px 1px inset;
+    background: rgba(30, 30, 30, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+  }
+  
+  .glass-card-elevated:hover {
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 25px 65px, rgba(255, 255, 255, 0.25) 0px 1px inset;
+    transform: translateY(-2px);
+    background: rgba(40, 40, 40, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Glass input style */
+  .glass-input {
+    backdrop-filter: blur(60px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: #ffffff;
+    transition: all 0.3s ease;
+  }
+  
+  .glass-input:focus {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Glass button style */
+  .glass-button {
+    backdrop-filter: blur(60px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: #ffffff;
+    transition: all 0.3s ease;
+  }
+  
+  .glass-button:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+  }
+  
+  /* Solid button style */
+  .solid-button {
+    background: #2f2f2f;
+    border-radius: 12px;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .solid-button:hover {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  /* Glass dropdown style */
+  .glass-dropdown {
+    backdrop-filter: blur(60px);
+    background: rgba(20, 20, 20, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 30px;
+  }
+  
+  /* Glass modal style */
+  .glass-modal {
+    backdrop-filter: blur(60px);
+    background: rgba(20, 20, 20, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 20px 60px, rgba(255, 255, 255, 0.15) 0px 1px inset;
+  }
+  
+  .glass-card {
+    @apply backdrop-blur-md bg-white/12 border border-white/15;
+  }
+  .hover-glow {
+    @apply transition-all duration-300;
+  }
+
+  .hover-glow:hover {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+  .badge-glow {
+    @apply relative;
+  }
+
+  .badge-glow::before {
+    content: '';
+    @apply absolute inset-0 rounded-xl opacity-0 transition-opacity;
+    background: radial-gradient(circle, var(--badge-glow-color, rgba(255, 255, 255, 0.2)) 0%, transparent 70%);
+  }
+
+  .badge-glow:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Color-specific glow variables */
+  .badge-glow-purple { --badge-glow-color: rgba(147, 51, 234, 0.3); }
+  .badge-glow-blue { --badge-glow-color: rgba(166, 49, 214, 0.3); }
+  .badge-glow-green { --badge-glow-color: rgba(34, 197, 94, 0.3); }
+  .badge-glow-yellow { --badge-glow-color: rgba(234, 179, 8, 0.3); }
+  .badge-glow-pink { --badge-glow-color: rgba(236, 72, 153, 0.3); }
+  .badge-glow-cyan { --badge-glow-color: rgba(34, 211, 238, 0.3); }
+  .badge-glow-red { --badge-glow-color: rgba(239, 68, 68, 0.3); }
+  .badge-glow-orange { --badge-glow-color: rgba(249, 115, 22, 0.3); }
+  .badge-glow-white { --badge-glow-color: rgba(255, 255, 255, 0.3); }
+
+  /* Add this for better hover effects */
+  .glass-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(var(--angle, 0deg), transparent, transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .glass-card:hover::before {
+    opacity: 1;
+    --angle: 90deg;
+  }
+
+  /* Platform-specific gradient colors */
+  .glass-card:nth-child(1):hover::before { background: linear-gradient(var(--angle, 0deg), #1DB954, transparent); }
+  .glass-card:nth-child(2):hover::before { background: linear-gradient(var(--angle, 0deg), #5865F2, transparent); }
+  .glass-card:nth-child(3):hover::before { background: linear-gradient(var(--angle, 0deg), #FF0000, transparent); }
+  .glass-card:nth-child(4):hover::before { background: linear-gradient(var(--angle, 0deg), #FF3300, transparent); }
+  .glass-card:nth-child(5):hover::before { background: linear-gradient(var(--angle, 0deg), #ffffff, transparent); }
+  .glass-card:nth-child(6):hover::before { background: linear-gradient(var(--angle, 0deg), #1B2838, transparent); }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg) translateZ(0);
+    }
+    to {
+      transform: rotate(360deg) translateZ(0);
+    }
+  }
+
+  .circle-rotate {
+    animation: rotate var(--rotation-speed, 20s) linear infinite;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* Add enhanced animation keyframes for gradient circles */
+  @keyframes float-rotate {
+    0%, 100% {
+      transform: rotate(0deg) scale(1) translateZ(0);
+      opacity: var(--base-opacity, 0.3);
+    }
+    50% {
+      transform: rotate(180deg) scale(1.1) translateZ(0);
+      opacity: calc(var(--base-opacity, 0.3) * 1.2);
+    }
+  }
+
+  @keyframes pulse-scale {
+    0%, 100% {
+      transform: scale(1) translateZ(0);
+      opacity: var(--base-opacity, 0.3);
+    }
+    50% {
+      transform: scale(1.2) translateZ(0);
+      opacity: calc(var(--base-opacity, 0.3) * 1.3);
+    }
+  }
+
+  @keyframes drift {
+    0% {
+      transform: translate(0, 0) rotate(0deg) translateZ(0);
+    }
+    33% {
+      transform: translate(var(--drift-x, 20px), var(--drift-y, -20px)) rotate(120deg) translateZ(0);
+    }
+    66% {
+      transform: translate(calc(var(--drift-x, 20px) * -1), calc(var(--drift-y, -20px) * -1)) rotate(240deg) translateZ(0);
+    }
+    100% {
+      transform: translate(0, 0) rotate(360deg) translateZ(0);
+    }
+  }
+
+  .animate-float-rotate {
+    animation: float-rotate var(--duration, 30s) ease-in-out infinite;
+  }
+
+  .animate-pulse-scale {
+    animation: pulse-scale var(--duration, 20s) ease-in-out infinite;
+  }
+
+  .animate-drift {
+    animation: drift var(--duration, 40s) ease-in-out infinite;
+  }
+
+  /* Hardware acceleration classes */
+  .hardware-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform, opacity;
+  }
+  @keyframes particleFloat {
+    0% {
+      transform: translateY(100vh) scale(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.3;
+    }
+    90% {
+      opacity: 0.3;
+    }
+    100% {
+      transform: translateY(-100px) scale(1);
+      opacity: 0;
+    }
+  }
+
+  /* Enhanced particle animations */
+  @keyframes float {
+    0%, 100% {
+      transform: translate(0, 0);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translate(-10px, -10px);
+      opacity: 0.4;
+    }
+  }
+
+  @keyframes float-reverse {
+    0%, 100% {
+      transform: translate(0, 0);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translate(10px, 10px);
+      opacity: 0.4;
+    }
+  }
+
+  @keyframes float-slow {
+    0%, 100% {
+      transform: translate(0, 0);
+      opacity: 0.2;
+    }
+    50% {
+      transform: translate(5px, -5px);
+      opacity: 0.3;
+    }
+  }
+
+  .animate-float {
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .animate-float-reverse {
+    animation: float-reverse 10s ease-in-out infinite;
+  }
+
+  .animate-float-slow {
+    animation: float-slow 12s ease-in-out infinite;
+  }
+  /* Add this to the existing @layer base section */
+
+  /* Shadow glow effect for icons */
+  .shadow-glow {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.2);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .shadow-glow:hover {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.3);
+  }
+
+  /* Add Spotify Player customization */
+  .spotify-player {
+    @apply w-full max-w-3xl mx-auto;
+  }
+
+  .spotify-player iframe {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 0.75rem !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .spotify-player iframe:hover {
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 8px rgba(29, 185, 84, 0.3) !important;
+  }
+
+  /* Custom styles for Spotify embed */
+  .spotify-player :global(.sp-player) {
+    background: transparent !important;
+  }
+
+  .spotify-player :global(.sp-player-button) {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .spotify-player :global(.sp-player-button:hover) {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .spotify-player :global(.sp-progress-bar) {
+    background: rgba(255, 255, 255, 0.15) !important;
+    height: 4px !important;
+    border-radius: 2px !important;
+  }
+
+  .spotify-player :global(.sp-progress-bar__fg) {
+    background: #1DB954 !important;
+    border-radius: 2px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 0 5px rgba(29, 185, 84, 0.5) !important;
+  }
+
+  .spotify-player :global(.sp-now-playing) {
+    border: none !important;
+    background: transparent !important;
+  }
+
+  .spotify-player :global(.sp-now-playing__cover) {
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .spotify-player :global(.sp-now-playing__cover:hover) {
+    transform: scale(1.03) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .spotify-player :global(.sp-track) {
+    transition: background-color 0.2s ease !important;
+  }
+
+  .spotify-player :global(.sp-track:hover) {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .dark {
+    --background: 0 0% 4%;  /* #0a0a0a - darker background */
+    --foreground: 0 0% 100%;  /* #ffffff */
+    --card: 0 0% 8%;  /* #141414 - darker than before */
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 15%;  /* #262626 - darker */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 80%;  /* #cccccc */
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 80%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 0 0% 12%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideDown {
+  animation: slideDown 0.2s ease-out forwards;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom radio button styling */
+[data-state="checked"].RadioGroupItem {
+  background-color: #8452b5 !important;
+  border-color: #8452b5 !important;
+}
+
+.RadioGroupItem {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Update border colors to be lighter */
+.border-white\/10 {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Add animation for About page */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Spotify Player customization */

@@ -1,0 +1,73 @@
+.glow-counter-container {
+  position: relative;
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+  background: rgba(15, 15, 15, 0.7);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glow-counter-container:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.glow-counter-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.glow-counter-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.glow-counter-value-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.glow-counter-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.glow-counter-container:hover .glow-counter-icon {
+  transform: scale(1.1);
+}
+
+.glow-counter-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.glow-counter-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 2px;
+  transition: color 0.3s ease;
+}
+
+.glow-counter-container:hover .glow-counter-label {
+  color: rgba(255, 255, 255, 0.8);
+} 

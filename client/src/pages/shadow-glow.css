@@ -1,0 +1,18 @@
+.shadow-glow {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+.shadow-glow:hover {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.3);
+}
+
+/* Apply glow effect to icons */
+.icon-glow svg {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
+  transition: filter 0.3s ease;
+}
+
+.icon-glow:hover svg {
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 18px rgba(255, 255, 255, 0.4));
+}

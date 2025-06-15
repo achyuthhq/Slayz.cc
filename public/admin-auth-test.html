@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Authentication Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Authentication Test</h1>
+    
+    <div class="form-group">
+        <label for="password">Admin Password:</label>
+        <input type="password" id="password" value="AchyuthGotRizz@7989698070$343#!">
+    </div>
+    
+    <button id="testAuth">Test Authentication</button>
+    
+    <div class="result">
+        <h3>Result:</h3>
+        <div id="status"></div>
+        <pre id="response"></pre>
+    </div>
+    
+    <script>
+        document.getElementById('testAuth').addEventListener('click', async () => {
+            const password = document.getElementById('password').value;
+            const statusElement = document.getElementById('status');
+            const responseElement = document.getElementById('response');
+            
+            statusElement.innerHTML = 'Testing...';
+            responseElement.textContent = '';
+            
+            try {
+                console.log('Testing admin authentication with password:', password);
+                
+                const response = await fetch('/api/admin/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    },
+                    body: JSON.stringify({ password }),
+                    credentials: 'include'
+                });
+                
+                console.log('Response status:', response.status);
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                responseElement.textContent = JSON.stringify(data, null, 2);
+                
+                if (response.ok) {
+                    statusElement.innerHTML = '<span class="success">✅ Authentication successful!</span>';
+                } else {
+                    statusElement.innerHTML = '<span class="error">❌ Authentication failed!</span>';
+                }
+            } catch (error) {
+                console.error('Error testing admin auth:', error);
+                statusElement.innerHTML = '<span class="error">❌ Error!</span>';
+                responseElement.textContent = error.toString();
+            }
+        });
+    </script>
+</body>
+</html> 

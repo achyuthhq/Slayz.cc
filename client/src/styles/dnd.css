@@ -1,0 +1,97 @@
+/* Drag and drop styles */
+.touch-dragging {
+  overflow: hidden;
+  touch-action: none;
+  position: relative;
+}
+
+/* Additional dragging class */
+.is-dragging {
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.is-dragging-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Prevent scrolling when dragging */
+.touch-dragging *, .is-dragging * {
+  touch-action: none !important;
+}
+
+/* Enhanced touch targets for mobile */
+[data-rbd-drag-handle-draggable-id] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+  cursor: grab;
+}
+
+[data-rbd-drag-handle-draggable-id]:active {
+  cursor: grabbing;
+  transform: scale(1.02);
+  transition: transform 0.1s ease;
+}
+
+/* Dragging styles */
+[data-rbd-draggable-id][data-rbd-dragging="true"] {
+  z-index: 999;
+  opacity: 0.9;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+  background-color: rgba(142, 68, 173, 0.3) !important;
+  border-color: rgba(142, 68, 173, 0.5) !important;
+  position: relative;
+}
+
+/* Add highlight effect for dragging item */
+[data-rbd-draggable-id][data-rbd-dragging="true"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 15px 5px rgba(142, 68, 173, 0.3);
+  pointer-events: none;
+}
+
+/* Drop area styles */
+[data-rbd-droppable-id] {
+  min-height: 50px;
+  transition: background-color 0.2s ease;
+}
+
+/* Highlight drop area when dragging happens */
+[data-rbd-droppable-id][data-rbd-droppable-id="social-links"][data-rbd-drop-animation="drop-animating"] {
+  background-color: rgba(142, 68, 173, 0.05);
+  border-radius: 12px;
+}
+
+/* Placeholder styles */
+[data-rbd-placeholder-context-id] {
+  opacity: 0.4;
+  transition: opacity 0.2s, transform 0.2s;
+  background-color: rgba(142, 68, 173, 0.1) !important;
+  border: 2px dashed rgba(142, 68, 173, 0.3) !important;
+}
+
+/* Ensure the list doesn't collapse during drag */
+.space-y-3 {
+  min-height: 10px;
+}
+
+/* Additional mobile improvements */
+@media (max-width: 768px) {
+  [data-rbd-drag-handle-draggable-id] {
+    padding: 12px !important; /* Larger touch target on mobile */
+  }
+  
+  /* Make drag handle more obvious on mobile */
+  [data-testid="drag-handle"] {
+    transform: scale(1.1);
+  }
+} 
