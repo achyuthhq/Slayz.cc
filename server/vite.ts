@@ -26,7 +26,7 @@ export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
     hmr: { server },
-    allowedHosts: true,
+    allowedHosts: true as true,
   };
 
   const vite = await createViteServer({
@@ -71,14 +71,28 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(__dirname, "public");
-
+  // In production, the static files are in dist/public
+  // We need to use the correct path whether we're running from source or from the bundled output
+  let distPath = path.resolve(process.cwd(), "dist", "public");
+  
+  // Check if the path exists
   if (!fs.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`,
-    );
+    // Try alternative path (when running from bundled code)
+    distPath = path.resolve(process.cwd(), "public");
+    
+    // If neither path exists, throw an error
+    if (!fs.existsSync(distPath)) {
+      console.error(`Could not find the build directory at ${distPath} or ${path.resolve(process.cwd(), "dist", "public")}`);
+      console.error('Current directory:', process.cwd());
+      console.error('Directory contents:', fs.readdirSync(process.cwd()));
+      
+      throw new Error(
+        `Could not find the build directory. Make sure to build the client first with 'npm run build'`
+      );
+    }
   }
 
+  console.log(`Serving static files from: ${distPath}`);
   app.use(express.static(distPath));
 
   // fall through to index.html if the file doesn't exist

@@ -413,7 +413,14 @@ async function retryApiCall<T>(
 }
 
 export function registerRoutes(app: Express): Server {
+  // Setup auth before other routes
   setupAuth(app);
+
+  // Health check endpoint for Render
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
+
   const httpServer = createServer(app);
 
   // Set up WebSocket server
