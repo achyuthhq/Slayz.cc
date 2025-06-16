@@ -20,7 +20,16 @@ const externalModules = [
   'ws', // Add ws to external modules
   'events', // Add events to external modules
   'stream', // Add stream to external modules
-  'http', // Node.js built-in modules without node: prefix
+  
+  // Modules with top-level await issues
+  '@babel/core',
+  '@babel/helper-module-transforms',
+  '@babel/helper-compilation-targets',
+  'browserslist',
+  'postcss',
+  
+  // Node.js built-in modules without node: prefix
+  'http',
   'https',
   'fs',
   'path',
@@ -40,6 +49,7 @@ const externalModules = [
   'querystring',
   'readline',
   'assert',
+  
   // Node.js built-in modules with node: prefix
   'node:http',
   'node:fs',
@@ -150,6 +160,21 @@ const handleDotenvPlugin = {
 const handleDynamicRequiresPlugin = {
   name: 'handle-dynamic-requires',
   setup(build) {
+    // Mark all node_modules as external to avoid bundling issues
+    build.onResolve({ filter: /^[^./]|^\.[^./]|^\.\.[^/]/ }, args => {
+      // Skip our own namespace
+      if (args.namespace !== 'file') {
+        return null;
+      }
+      
+      // If it's coming from a node_modules package, mark it as external
+      if (args.importer && args.importer.includes('node_modules')) {
+        return { path: args.path, external: true };
+      }
+      
+      return null;
+    });
+    
     // Intercept all require calls in the code
     build.onLoad({ filter: /\.js$/ }, async (args) => {
       try {
@@ -210,6 +235,9 @@ const buildOptions = {
   define: {
     'process.env.NODE_ENV': '"production"'
   },
+  // Add this to avoid bundling node_modules
+  preserveSymlinks: true,
+  mainFields: ['module', 'main'],
 };
 
 try {
