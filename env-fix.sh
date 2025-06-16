@@ -1,20 +1,25 @@
-#!/usr/bin/env node
+#!/bin/bash
 
-/**
- * CUSTOM MODULE LOADER
- * 
- * This script uses a custom module loader to intercept requests for the env module
- * and provide a virtual implementation. This approach doesn't modify any files.
- */
+# This script creates the env module at the exact path Node.js is looking for it
+# It's the simplest possible solution with no dependencies
 
-const { createRequire } = require('module');
-const { resolve, dirname } = require('path');
-const { spawnSync } = require('child_process');
-const fs = require('fs');
+# The exact path where Node.js is looking for the module
+TARGET_PATH="/opt/render/project/src/dist/env"
 
-// Create a virtual env module
-const virtualEnvModule = `
-// Virtual environment variables module
+echo "Creating env module at $TARGET_PATH..."
+
+# Create the directory structure
+mkdir -p "$(dirname "$TARGET_PATH")" || {
+  echo "Warning: Could not create directory $(dirname "$TARGET_PATH")"
+  # Continue anyway, the directory might already exist
+}
+
+# Create the env module file
+cat > "$TARGET_PATH" << 'EOF' || {
+  echo "Error: Could not write to $TARGET_PATH"
+  exit 1
+}
+// Environment variables configuration
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -49,28 +54,19 @@ export default {
   NODE_ENV,
   env
 };
-`;
+EOF
 
-// Write the virtual module to a temporary file
-const tempDir = fs.mkdtempSync('virtual-env-');
-const virtualModulePath = `${tempDir}/env.mjs`;
-fs.writeFileSync(virtualModulePath, virtualEnvModule);
+# Set file permissions
+chmod 644 "$TARGET_PATH" || {
+  echo "Warning: Could not set file permissions for $TARGET_PATH"
+  # Continue anyway, permissions might be okay
+}
 
-// Set up environment variables for Node.js
-process.env.NODE_OPTIONS = `--experimental-modules --experimental-specifier-resolution=node --experimental-loader=${__filename}`;
-
-// Start the server with our custom loader
-console.log('🚀 Starting server with custom module loader');
-const result = spawnSync('node', ['dist/index.mjs'], {
-  stdio: 'inherit',
-  env: {
-    ...process.env,
-    VIRTUAL_ENV_MODULE_PATH: virtualModulePath
-  }
-});
-
-// Clean up temporary files
-fs.rmSync(tempDir, { recursive: true, force: true });
-
-// Exit with the same code as the server
-process.exit(result.status); 
+# Verify the file was created
+if [ -f "$TARGET_PATH" ]; then
+  echo "✅ Successfully created env module at $TARGET_PATH"
+  exit 0
+else
+  echo "❌ Failed to create env module at $TARGET_PATH"
+  exit 1
+fi 
