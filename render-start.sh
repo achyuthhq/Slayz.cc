@@ -8,9 +8,18 @@ set -e
 # Log what we're doing
 echo "Starting Render deployment process..."
 
+# Run the dependency fix script
+echo "Fixing dependencies..."
+node fix-dependencies.js
+
 # Ensure all external modules are installed correctly
 echo "Ensuring external modules are installed..."
-npm install --no-save postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 lightningcss dotenv ws events stream
+npm install postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 --no-save
+
+# Create a simple module to ensure babel can find @babel/preset-typescript
+echo "Creating babel preset typescript stub..."
+mkdir -p node_modules/@babel/preset-typescript
+echo '{"name":"@babel/preset-typescript","version":"7.22.5"}' > node_modules/@babel/preset-typescript/package.json
 
 # Create a simple .env file if it doesn't exist
 if [ ! -f .env ]; then
@@ -19,14 +28,6 @@ if [ ! -f .env ]; then
   echo "SESSION_SECRET=$SESSION_SECRET" >> .env
 fi
 
-# Create a NODE_PATH environment variable to help find modules
-export NODE_PATH="./node_modules:./dist/node_modules"
-echo "NODE_PATH set to: $NODE_PATH"
-
-# Run the fix-env.sh script to create the env module
-echo "Running fix-env.sh to create env module..."
-bash ./fix-env.sh
-
-# Start the server
-echo "Starting the server..."
-node dist/index.mjs 
+# Start the server using our wrapper
+echo "Starting server with wrapper..."
+node server-wrapper.mjs 
