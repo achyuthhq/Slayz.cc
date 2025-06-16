@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -193,6 +193,19 @@ const PremiumFeatureDialog = ({ open, onOpenChange, featureName }: { open: boole
       </DialogContent>
     </Dialog>
   );
+};
+
+// Add debounce utility function with proper TypeScript types
+const debounce = <T extends (...args: any[]) => any>(func: T, delay: number): ((...args: Parameters<T>) => void) => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  return (...args: Parameters<T>) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
 };
 
 export default function SocialsPage() {
@@ -633,6 +646,34 @@ export default function SocialsPage() {
     setColorMode(mode);
   };
 
+  // Create a debounced version of the theme update function
+  const debouncedUpdateTheme = useCallback(
+    debounce((updatedTheme: Partial<Theme>) => {
+      updateThemeMutation.mutate({ theme: updatedTheme });
+    }, 1500), // 1.5 second delay
+    [updateThemeMutation]
+  );
+
+  // Handle mono color change with debounce
+  const handleMonoColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newColor = e.target.value;
+    setMonoColor(newColor);
+    
+    // Only update if in mono mode
+    if (colorMode === "mono") {
+      const updatedTheme = {
+        ...theme,
+        socialIcons: {
+          ...theme?.socialIcons,
+          colorMode,
+          monoColor: newColor,
+          glowEnabled: glowEnabled
+        }
+      };
+      debouncedUpdateTheme(updatedTheme);
+    }
+  };
+
   // Add this useEffect for debugging theme issues
   useEffect(() => {
     console.log("[SocialsPage] User theme:", user?.theme);
@@ -747,7 +788,7 @@ export default function SocialsPage() {
                         <Input
                           type="color"
                           value={monoColor}
-                          onChange={(e) => setMonoColor(e.target.value)}
+                          onChange={handleMonoColorChange}
                           className="h-8 w-full bg-[#8e44ad]/10 border-[#8e44ad]/20 hover:border-[#8e44ad]/30 cursor-pointer"
                         />
                       </Label>

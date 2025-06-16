@@ -59,20 +59,21 @@ const pricingTiers: PricingTier[] = [
       "Advanced profile customization",
       "Unlimited social links",
       "Premium themes and layouts",
-      "5GB storage space",
+      "Steam integration",
+      "Profile decorations",
+      "Display name effects",
+      "Profile particle effects",
+      "Premium badges",
       "Advanced analytics dashboard",
+      "Unlimited chatbot with custom prompts",
       "Priority support",
-      "Custom domain",
-      "Ad-free experience",
       "Early access to new features",
       "Exclusive premium badges",
       "AI-powered profile optimization",
       "Premium traffic insights",
-      "Advanced SEO tools",
-      "Priority indexing on Slayz",
       "Enhanced conversion tools",
       "Lifetime updates",
-    ],
+  ],
     cta: "Get Lifetime Access",
     popular: true,
   },
@@ -585,12 +586,6 @@ function DashboardPricing() {
                       <div className="mr-3 h-5 w-5 flex-shrink-0 rounded-full bg-gradient-to-r from-primary to-violet-500 flex items-center justify-center">
                         <Check className="h-3 w-3 text-white" />
                       </div>
-                      <span className="text-sm">5GB storage space</span>
-                    </li>
-                    <li className="flex items-center">
-                      <div className="mr-3 h-5 w-5 flex-shrink-0 rounded-full bg-gradient-to-r from-primary to-violet-500 flex items-center justify-center">
-                        <Check className="h-3 w-3 text-white" />
-                      </div>
                       <span className="text-sm">Advanced analytics dashboard</span>
                     </li>
                     <li className="flex items-center">
@@ -604,12 +599,6 @@ function DashboardPricing() {
                         <Check className="h-3 w-3 text-white" />
                       </div>
                       <span className="text-sm">Custom domain</span>
-                    </li>
-                    <li className="flex items-center">
-                      <div className="mr-3 h-5 w-5 flex-shrink-0 rounded-full bg-gradient-to-r from-primary to-violet-500 flex items-center justify-center">
-                        <Check className="h-3 w-3 text-white" />
-                      </div>
-                      <span className="text-sm">Ad-free experience</span>
                     </li>
                     <li className="flex items-center">
                       <div className="mr-3 h-5 w-5 flex-shrink-0 rounded-full bg-gradient-to-r from-primary to-violet-500 flex items-center justify-center">
@@ -634,12 +623,6 @@ function DashboardPricing() {
                         <Check className="h-3 w-3 text-white" />
                       </div>
                       <span className="text-sm">Premium traffic insights</span>
-                    </li>
-                    <li className="flex items-center">
-                      <div className="mr-3 h-5 w-5 flex-shrink-0 rounded-full bg-gradient-to-r from-primary to-violet-500 flex items-center justify-center">
-                        <Check className="h-3 w-3 text-white" />
-                      </div>
-                      <span className="text-sm">Advanced SEO tools</span>
                     </li>
                     <li className="flex items-center">
                       <div className="mr-3 h-5 w-5 flex-shrink-0 rounded-full bg-gradient-to-r from-primary to-violet-500 flex items-center justify-center">

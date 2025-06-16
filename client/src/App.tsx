@@ -19,6 +19,8 @@ import AdminUsersPage from "@/pages/admin-users-page";
 import AnalyticsPage from "@/pages/analytics-page";
 import PricingPage from "@/pages/pricing-page";
 import AboutPage from "@/pages/about-page";
+import PrivacyPolicyPage from "@/pages/privacy-policy-page";
+import TermsPage from "@/pages/terms-page";
 import NotFound from "@/pages/not-found";
 import ChatbotPage from "@/pages/chatbot-page";
 import SubscriptionPage from "@/pages/subscription-page";
@@ -66,6 +68,8 @@ function Router() {
       <Route path="/pricing" component={PricingPage} />
       <Route path="/leaderboard" component={LeaderboardPage} />
       <Route path="/about" component={AboutPage} />
+      <Route path="/privacy" component={PrivacyPolicyPage} />
+      <Route path="/terms" component={TermsPage} />
       <Route path="/payment/success" component={PaymentSuccessPage} />
       <Route path="/payment/cancel" component={PaymentCancelPage} />
       <Route path="/reset-password" component={ResetPasswordPage} />
