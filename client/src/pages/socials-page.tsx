@@ -657,7 +657,7 @@ export default function SocialsPage() {
           <h1 className="text-2xl font-mono font-bold tracking-tighter">
             Link your social media profiles.
           </h1>
-          <p className="text-white/70 mt-1">Pick a social media to add to your profile.</p>
+          <p className="text-white/70 mt-1">Pick a social media icon to add to your profile.</p>
           {!isPremium && (
             <div className="mt-2 p-3 bg-black/20 border border-white/5 rounded text-sm text-white/70">
               Free users can add up to 5 social links and only one website link. Upgrade to Premium for unlimited social links and multiple website links.
