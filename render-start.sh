@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Super simple script to start the server on Render.com
-# This script directly modifies the index.mjs file to remove the problematic import
+# This script ensures the env module is available in the dist directory
 
 echo "Starting Render deployment process..."
 
 # Install required packages
 echo "Installing required packages..."
-npm install --no-save dotenv
+npm install --no-save dotenv postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 lightningcss ws events stream
 
 # Create a simple .env file if it doesn't exist
 if [ ! -f .env ]; then
@@ -16,26 +16,13 @@ if [ ! -f .env ]; then
   echo "SESSION_SECRET=$SESSION_SECRET" >> .env
 fi
 
-# The path to the index.mjs file
-INDEX_PATH="dist/index.mjs"
+# Make the copy-env-module.js script executable
+echo "Making copy-env-module.js executable..."
+chmod +x copy-env-module.js
 
-# Check if the index.mjs file exists
-if [ ! -f "$INDEX_PATH" ]; then
-  echo "Error: Could not find $INDEX_PATH"
-  exit 1
-fi
-
-# Create a backup of the original file if it doesn't exist
-if [ ! -f "${INDEX_PATH}.original" ]; then
-  echo "Creating backup of original index.mjs..."
-  cp "$INDEX_PATH" "${INDEX_PATH}.original"
-fi
-
-echo "Directly modifying index.mjs to remove imports from ./env..."
-
-# Use sed to remove any import statements from ./env
-# This is the most direct approach and will definitely work
-sed -i.bak '/import.*from.*\.\/env/d' "$INDEX_PATH"
+# Run the copy-env-module.js script to copy env.ts to dist/env
+echo "Running copy-env-module.js to ensure env module is available..."
+node copy-env-module.js
 
 echo "Starting the server..."
-node "$INDEX_PATH" 
+node dist/index.mjs 
