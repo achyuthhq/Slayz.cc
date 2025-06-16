@@ -1,26 +1,23 @@
 #!/usr/bin/env node
 
 /**
- * DIRECT FIX FOR ENV MODULE NOT FOUND
+ * DIRECT FIX FOR ENV MODULE NOT FOUND (CommonJS version)
  * 
  * This script directly modifies the index.mjs file to replace imports from './env'
  * with inline environment variables. This is the most direct approach possible.
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const fs = require('fs');
+const path = require('path');
 
 console.log('🔧 DIRECT FIX: Modifying index.mjs to remove dependency on env module');
 
 // Define paths
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const indexMjsPath = path.join(process.cwd(), 'dist/index.mjs');
 
 // Define the replacement content
 const envReplacement = `
-// Inline environment variables (added by direct-fix.js)
+// Inline environment variables (added by direct-fix.cjs)
 import dotenv from 'dotenv';
 dotenv.config();
 

@@ -23,9 +23,9 @@ fi
 export NODE_PATH="./node_modules:./dist/node_modules"
 echo "NODE_PATH set to: $NODE_PATH"
 
-# Run the fix-env.sh script to create the env module
-echo "Running fix-env.sh to create env module..."
-bash ./fix-env.sh
+# Use ultimate-fix.sh to directly modify the index.mjs file
+echo "Running ultimate-fix.sh to directly modify index.mjs..."
+bash ./ultimate-fix.sh
 
 # Start the server
 echo "Starting the server..."
