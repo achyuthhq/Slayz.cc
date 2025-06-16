@@ -109,7 +109,7 @@ const Hero = () => {
                     <Container delay={0.2}>
                         <p className="max-w-xl mx-auto mt-2 text-base lg:text-lg text-center text-muted-foreground">
                             Slayz lets you create a stunning bio link with
-                            animations, effects, AI chatbots, music, socials,
+                            animations, effects, AI-enabled chatbots, music, socials,
                             badges, and more—your online identity, reimagined.
                         </p>
                     </Container>
