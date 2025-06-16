@@ -75,6 +75,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { Sparkles, Crown } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const SOCIAL_PLATFORMS = [
   // Popular social platforms
@@ -195,7 +196,36 @@ const PremiumFeatureDialog = ({ open, onOpenChange, featureName }: { open: boole
   );
 };
 
-export default function SocialsPage() {
+function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 text-center">
+      <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-6 max-w-lg w-full">
+        <h2 className="text-xl font-bold mb-4">Something went wrong loading the socials page</h2>
+        <p className="text-white/70 mb-4">{error.message}</p>
+        <pre className="bg-black/30 p-4 rounded text-xs overflow-auto text-left mb-4 max-h-[200px]">
+          {error.stack}
+        </pre>
+        <button
+          onClick={resetErrorBoundary}
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+        >
+          Try again
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default function SocialsPageWrapper() {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => window.location.reload()}>
+      <SocialsPage />
+    </ErrorBoundary>
+  );
+}
+
+function SocialsPage() {
+  console.log("[SocialsPage] Component rendering started");
   const { toast } = useToast();
   const { user } = useAuth();
   const [addLinkOpen, setAddLinkOpen] = useState(false);
@@ -265,8 +295,18 @@ export default function SocialsPage() {
   }, [initialMonoColor]);
 
   const { data: links = [], isLoading } = useQuery<any[]>({
-    queryKey: ["/api/links"]
+    queryKey: ["/api/links"],
+    onError: (error) => {
+      console.error("[SocialsPage] Error fetching links:", error);
+      toast({
+        title: "Error loading social links",
+        description: error instanceof Error ? error.message : "Please try refreshing the page",
+        variant: "destructive",
+      });
+    }
   });
+
+  console.log("[SocialsPage] Links data:", links, "isLoading:", isLoading);
 
   // Sort links when data arrives and update local state
   useEffect(() => {
@@ -617,6 +657,22 @@ export default function SocialsPage() {
     }
     setColorMode(mode);
   };
+
+  // Add this useEffect for debugging theme issues
+  useEffect(() => {
+    console.log("[SocialsPage] User theme:", user?.theme);
+    console.log("[SocialsPage] Derived theme:", theme);
+    
+    // Check for common theme parsing issues
+    if (user?.theme && typeof user.theme === 'string') {
+      try {
+        const parsedTheme = JSON.parse(user.theme);
+        console.log("[SocialsPage] Parsed theme:", parsedTheme);
+      } catch (e) {
+        console.error("[SocialsPage] Theme parsing error:", e);
+      }
+    }
+  }, [user?.theme, theme]);
 
   return (
     <div className="container mx-auto px-4 py-8">
