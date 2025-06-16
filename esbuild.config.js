@@ -16,6 +16,7 @@ const externalModules = [
   'express',
   'express-session',
   'lightningcss',
+  'dotenv', // Add dotenv to external modules
   'node:http', // Node.js built-in modules
   'node:fs',
   'node:path',
@@ -68,6 +69,58 @@ const handlePostgresPlugin = {
   },
 };
 
+// Create a plugin to handle dotenv and prevent dynamic requires
+const handleDotenvPlugin = {
+  name: 'handle-dotenv',
+  setup(build) {
+    // When dotenv is imported, return a simple implementation
+    build.onResolve({ filter: /^dotenv$/ }, args => {
+      return { path: args.path, namespace: 'dotenv-stub' };
+    });
+    
+    build.onLoad({ filter: /.*/, namespace: 'dotenv-stub' }, () => {
+      return {
+        contents: `
+          // Simple dotenv implementation without dynamic requires
+          export function config(options = {}) {
+            console.log('Using simplified dotenv implementation');
+            try {
+              const fs = await import('fs');
+              const path = await import('path');
+              const envPath = options.path || '.env';
+              
+              if (fs.existsSync(envPath)) {
+                const envContent = fs.readFileSync(envPath, 'utf8');
+                const envVars = envContent.split('\\n')
+                  .filter(line => line.trim() && !line.startsWith('#'))
+                  .map(line => {
+                    const [key, ...valueParts] = line.split('=');
+                    const value = valueParts.join('=').trim();
+                    return [key.trim(), value];
+                  });
+                
+                for (const [key, value] of envVars) {
+                  if (!process.env[key]) {
+                    process.env[key] = value;
+                  }
+                }
+              }
+              
+              return { parsed: process.env };
+            } catch (error) {
+              console.error('Error loading .env file:', error);
+              return { error };
+            }
+          }
+          
+          export default { config };
+        `,
+        loader: 'js',
+      };
+    });
+  },
+};
+
 // Build configuration
 const buildOptions = {
   entryPoints: ['server/index.ts'],
@@ -81,7 +134,10 @@ const buildOptions = {
   sourcemap: true,
   target: ['node18'],
   logLevel: 'info',
-  plugins: [handleLightningCSSPlugin, handlePostgresPlugin],
+  plugins: [handleLightningCSSPlugin, handlePostgresPlugin, handleDotenvPlugin],
+  define: {
+    'process.env.NODE_ENV': '"production"'
+  },
 };
 
 try {

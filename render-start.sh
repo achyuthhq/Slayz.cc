@@ -19,9 +19,13 @@ node module-resolver.js
 echo "Creating postgres patch module..."
 node postgres-patch.js
 
+# Create dotenv patch to fix dynamic require issue
+echo "Creating dotenv patch..."
+node dotenv-patch.js
+
 # Ensure all external modules are installed correctly
 echo "Ensuring external modules are installed..."
-npm install --no-save postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 lightningcss
+npm install --no-save postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 lightningcss dotenv
 
 # Verify postgres is installed
 if [ ! -d "node_modules/postgres" ]; then
@@ -85,6 +89,21 @@ echo "NODE_PATH set to: $NODE_PATH"
 # Create direct postgres module in dist directory
 echo "Creating direct postgres module in dist directory..."
 node create-postgres-module.js
+
+# Try to fix the dotenv dynamic require issue by patching the index.mjs file
+echo "Patching index.mjs to fix dotenv dynamic require issue..."
+if [ -f "dist/index.mjs" ]; then
+  # Create a backup
+  cp dist/index.mjs dist/index.mjs.bak
+  
+  # Replace dynamic require with static import
+  sed -i 's/require("fs")/import("fs")/g' dist/index.mjs
+  sed -i 's/require("path")/import("path")/g' dist/index.mjs
+  
+  echo "index.mjs patched for dynamic requires"
+else
+  echo "dist/index.mjs not found, skipping patch"
+fi
 
 # Start the server using our wrapper
 echo "Starting server with wrapper..."
