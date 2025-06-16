@@ -1,68 +1,60 @@
-// fix-imports.js
-// This script patches the transpiled index.mjs file to fix import paths
+#!/usr/bin/env node
+
+/**
+ * This script fixes the imports in the index.mjs file
+ * to fix the ERR_MODULE_NOT_FOUND error on Render.com
+ */
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Get the current directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log('Starting import path fix process...');
+// Path to the index.mjs file
+const indexPath = path.join(__dirname, 'dist', 'index.mjs');
 
-// Path to the transpiled index.mjs file
-const indexMjsPath = path.join(__dirname, 'dist/index.mjs');
+console.log('Starting import fix process...');
+console.log(`Looking for index.mjs at: ${indexPath}`);
 
-if (!fs.existsSync(indexMjsPath)) {
-  console.error(`Error: ${indexMjsPath} does not exist!`);
+// Check if the index.mjs file exists
+if (!fs.existsSync(indexPath)) {
+  console.error(`Error: Could not find ${indexPath}`);
   process.exit(1);
 }
 
-// Read the content of the file
-console.log(`Reading ${indexMjsPath}...`);
-let content = fs.readFileSync(indexMjsPath, 'utf8');
-
-// Check if the file imports from './env'
-const importRegex = /import\s+(?:{\s*[^}]*\s*}\s+from\s+)?['"]\.\/env['"]/g;
-if (importRegex.test(content)) {
-  console.log('Found import from "./env", replacing with "./env.mjs"');
+try {
+  // Read the index.mjs file
+  let content = fs.readFileSync(indexPath, 'utf8');
+  console.log('Successfully read index.mjs');
   
-  // Replace the import statement
-  content = content.replace(/(['"])\.\/env(['"])/g, '$1./env.mjs$2');
-  
-  // Write the modified content back to the file
-  console.log(`Writing modified content back to ${indexMjsPath}...`);
-  fs.writeFileSync(indexMjsPath, content);
-  console.log('Successfully updated import paths in index.mjs');
-} else {
-  console.log('No import from "./env" found in index.mjs');
-}
-
-// Check all other .mjs files in the dist directory
-const distDir = path.join(__dirname, 'dist');
-const files = fs.readdirSync(distDir);
-
-for (const file of files) {
-  if (file.endsWith('.mjs') && file !== 'index.mjs' && file !== 'env.mjs') {
-    const filePath = path.join(distDir, file);
-    console.log(`Checking ${filePath}...`);
-    
-    // Read the content of the file
-    let fileContent = fs.readFileSync(filePath, 'utf8');
-    
-    // Check if the file imports from './env'
-    if (importRegex.test(fileContent)) {
-      console.log(`Found import from "./env" in ${file}, replacing with "./env.mjs"`);
-      
-      // Replace the import statement
-      fileContent = fileContent.replace(/(['"])\.\/env(['"])/g, '$1./env.mjs$2');
-      
-      // Write the modified content back to the file
-      console.log(`Writing modified content back to ${filePath}...`);
-      fs.writeFileSync(filePath, fileContent);
-      console.log(`Successfully updated import paths in ${file}`);
-    }
+  // Create a backup of the original file
+  const backupPath = `${indexPath}.original`;
+  if (!fs.existsSync(backupPath)) {
+    fs.writeFileSync(backupPath, content);
+    console.log(`Created backup at ${backupPath}`);
   }
-}
-
-console.log('Import path fix process completed'); 
+  
+  // Fix the imports
+  const fixedContent = content
+    // Fix relative imports to use .mjs extension
+    .replace(/from\s+['"]\.\/([^'"]+)['"]/g, (match, p1) => {
+      // Convert relative imports to .mjs
+      return `from './${p1}.mjs'`;
+    })
+    .replace(/from\s+['"]\.\.\/([^'"]+)['"]/g, (match, p1) => {
+      // Convert parent directory imports to .mjs
+      return `from '../${p1}.mjs'`;
+    });
+  
+  // Write the fixed content back to the file
+  fs.writeFileSync(indexPath, fixedContent);
+  console.log(`Successfully wrote fixed content to ${indexPath}`);
+  
+  console.log('Import fix process completed successfully!');
+} catch (error) {
+  console.error('Error fixing imports:', error);
+  process.exit(1);
+} 
