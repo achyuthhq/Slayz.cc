@@ -30,6 +30,7 @@ import PaymentPage from "@/pages/payment-page";
 import LeaderboardPage from "@/pages/leaderboard-page";
 import ResetPasswordPage from "@/pages/reset-password";
 import LoadingProvider from "./hooks/use-loading";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import "./styles/dnd.css";
 
 function DashboardRoutes() {
@@ -89,6 +90,7 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <LoadingProvider>
+            <ScrollToTop />
             <Router />
             <Toaster />
           </LoadingProvider>
