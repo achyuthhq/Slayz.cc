@@ -99,6 +99,27 @@ export default {
   console.log('Created env.mjs file');
 }
 
+// Create a symbolic link from 'env' to 'env.mjs' to fix module resolution
+try {
+  console.log('Creating symbolic link from env to env.mjs...');
+  fs.symlinkSync('env.mjs', path.join(__dirname, 'env'), 'file');
+  console.log('Created symbolic link for env module');
+} catch (err) {
+  // If the symlink already exists or fails, try removing it first and then create it
+  try {
+    if (fs.existsSync(path.join(__dirname, 'env'))) {
+      fs.unlinkSync(path.join(__dirname, 'env'));
+    }
+    fs.symlinkSync('env.mjs', path.join(__dirname, 'env'), 'file');
+    console.log('Created symbolic link for env module (after cleanup)');
+  } catch (innerErr) {
+    console.error('Failed to create symbolic link:', innerErr);
+    // Create a hard copy as fallback
+    fs.copyFileSync(path.join(__dirname, 'env.mjs'), path.join(__dirname, 'env'));
+    console.log('Created hard copy of env.mjs as env (fallback)');
+  }
+}
+
 // Load environment variables
 try {
   const dotenv = await import('dotenv');

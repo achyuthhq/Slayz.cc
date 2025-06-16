@@ -94,28 +94,17 @@ echo "NODE_PATH set to: $NODE_PATH"
 echo "Creating direct postgres module in dist directory..."
 node create-postgres-module.js
 
-# Create env.mjs file in dist directory
-echo "Creating env.mjs file in dist directory..."
-cat > dist/env.mjs << 'EOF'
-// Environment variables configuration
-import dotenv from 'dotenv';
-dotenv.config();
+# Create env files using our dedicated script
+echo "Creating env files..."
+node create-env-file.js
 
-// Export environment variables with defaults
-export const DATABASE_URL = process.env.DATABASE_URL || 'postgres://localhost:5432/mydb';
-export const SESSION_SECRET = process.env.SESSION_SECRET || 'default_session_secret';
-export const PORT = process.env.PORT || 3000;
-export const NODE_ENV = process.env.NODE_ENV || 'development';
+# Create direct env stub file
+echo "Creating env stub file..."
+node create-env-stub.js
 
-// Export as default object as well
-export default {
-  DATABASE_URL,
-  SESSION_SECRET,
-  PORT,
-  NODE_ENV
-};
-EOF
-echo "Created env.mjs file in dist directory"
+# Fix import paths in transpiled files
+echo "Fixing import paths..."
+node fix-imports.js
 
 # Start the server using our simplified approach
 echo "Starting server..."
