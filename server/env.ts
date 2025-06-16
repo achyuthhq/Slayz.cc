@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import path from 'node:path';
 import fs from 'node:fs';
+import dotenv from 'dotenv';
 
 // Load environment variables from .env file
 const envPath = path.resolve(process.cwd(), '.env');
@@ -112,4 +113,18 @@ export const env = {
   PGDATABASE: RENDER_PG_DATABASE,
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
   EMAIL_FROM: process.env.EMAIL_FROM || 'onboarding@resend.dev'
+};
+
+// Export environment variables with defaults
+export const DATABASE_URL = process.env.DATABASE_URL || 'postgres://localhost:5432/mydb';
+export const SESSION_SECRET = process.env.SESSION_SECRET || 'default_session_secret';
+export const PORT = process.env.PORT || 3000;
+export const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// Export as default object as well
+export default {
+  DATABASE_URL,
+  SESSION_SECRET,
+  PORT,
+  NODE_ENV
 };

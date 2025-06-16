@@ -94,6 +94,29 @@ echo "NODE_PATH set to: $NODE_PATH"
 echo "Creating direct postgres module in dist directory..."
 node create-postgres-module.js
 
+# Create env.mjs file in dist directory
+echo "Creating env.mjs file in dist directory..."
+cat > dist/env.mjs << 'EOF'
+// Environment variables configuration
+import dotenv from 'dotenv';
+dotenv.config();
+
+// Export environment variables with defaults
+export const DATABASE_URL = process.env.DATABASE_URL || 'postgres://localhost:5432/mydb';
+export const SESSION_SECRET = process.env.SESSION_SECRET || 'default_session_secret';
+export const PORT = process.env.PORT || 3000;
+export const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// Export as default object as well
+export default {
+  DATABASE_URL,
+  SESSION_SECRET,
+  PORT,
+  NODE_ENV
+};
+EOF
+echo "Created env.mjs file in dist directory"
+
 # Start the server using our simplified approach
 echo "Starting server..."
 NODE_OPTIONS="--experimental-modules --experimental-specifier-resolution=node" node dist/server.mjs 
