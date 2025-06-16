@@ -8,80 +8,9 @@ set -e
 # Log what we're doing
 echo "Starting Render deployment process..."
 
-# Create env module at the exact absolute path
-echo "Creating env module at exact absolute path..."
-node fix-absolute-path.js
-
-# Run the dependency fix script
-echo "Fixing dependencies..."
-node fix-dependencies.js
-
-# Create module mocks and patches
-echo "Setting up module resolver..."
-node module-resolver.js
-
-echo "Creating postgres patch module..."
-node postgres-patch.js
-
-# Create dotenv patch to fix dynamic require issue
-echo "Creating dotenv patch..."
-node dotenv-patch.js
-
-# Create ws patch to fix dynamic require issue
-echo "Creating ws patch..."
-node ws-patch.js
-
 # Ensure all external modules are installed correctly
 echo "Ensuring external modules are installed..."
 npm install --no-save postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 lightningcss dotenv ws events stream
-
-# Verify postgres is installed
-if [ ! -d "node_modules/postgres" ]; then
-  echo "ERROR: postgres module not installed properly. Installing again..."
-  npm install --no-save postgres@3.4.7
-  
-  # Double check
-  if [ ! -d "node_modules/postgres" ]; then
-    echo "CRITICAL ERROR: Failed to install postgres module"
-    
-    # Create a minimal postgres module manually
-    echo "Creating manual postgres module..."
-    mkdir -p node_modules/postgres
-    echo '{
-      "name": "postgres",
-      "version": "3.4.7",
-      "main": "index.js",
-      "type": "module"
-    }' > node_modules/postgres/package.json
-    
-    echo 'console.log("Using manually created postgres module");
-    function postgres(connectionString, options = {}) {
-      console.log("Postgres connection requested:", connectionString);
-      return {
-        connect: async () => console.log("Mock postgres connect called"),
-        end: async () => console.log("Mock postgres end called"),
-        query: async (query, params) => {
-          console.log("Mock postgres query:", query, params);
-          return [];
-        }
-      };
-    }
-    postgres.default = postgres;
-    export default postgres;
-    export const sql = postgres;' > node_modules/postgres/index.js
-    
-    echo "Manual postgres module created"
-  else
-    echo "postgres module successfully installed on second attempt"
-  fi
-else
-  echo "postgres module verified"
-fi
-
-# Create a simple module to ensure babel can find @babel/preset-typescript
-echo "Creating babel preset typescript stub..."
-mkdir -p node_modules/@babel/preset-typescript
-echo '{"name":"@babel/preset-typescript","version":"7.22.5"}' > node_modules/@babel/preset-typescript/package.json
 
 # Create a simple .env file if it doesn't exist
 if [ ! -f .env ]; then
@@ -94,47 +23,70 @@ fi
 export NODE_PATH="./node_modules:./dist/node_modules"
 echo "NODE_PATH set to: $NODE_PATH"
 
-# Create direct postgres module in dist directory
-echo "Creating direct postgres module in dist directory..."
-node create-postgres-module.js
+# Patch the index.mjs file directly
+echo "Patching index.mjs file..."
+node patch-index.js
 
-# Create env files using our dedicated script
-echo "Creating env files..."
-node create-env-file.js
+# Try to start the server directly first
+echo "Starting server directly..."
+node dist/index.mjs || {
+  # If that fails, try the CommonJS version of the server wrapper
+  echo "Direct start failed, trying CommonJS wrapper..."
+  node server-wrapper-cjs.js || {
+    # If that fails, try the ESM version
+    echo "CommonJS wrapper failed, trying ESM wrapper..."
+    node server-wrapper.js || {
+      # If all fail, try a direct approach
+      echo "All approaches failed, trying direct approach..."
+      
+      # Create the env module directly
+      echo "Creating env module directly..."
+      mkdir -p /opt/render/project/src/dist
+      
+      cat > /opt/render/project/src/dist/env << 'EOF'
+// Environment variables configuration
+import dotenv from 'dotenv';
+dotenv.config();
 
-# Create direct env stub file
-echo "Creating env stub file..."
-node create-env-stub.js
+// Export environment variables with defaults
+export const DATABASE_URL = process.env.DATABASE_URL || 'postgres://localhost:5432/mydb';
+export const SESSION_SECRET = process.env.SESSION_SECRET || 'default_session_secret';
+export const PORT = process.env.PORT || 3000;
+export const NODE_ENV = process.env.NODE_ENV || 'development';
 
-# Fix import paths in transpiled files
-echo "Fixing import paths..."
-node fix-imports.js
+// Export the env object with all variables
+export const env = {
+  NODE_ENV: process.env.NODE_ENV || 'development',
+  PORT: parseInt(process.env.PORT || '3000', 10),
+  DATABASE_URL: process.env.DATABASE_URL || 'postgres://localhost:5432/mydb',
+  SESSION_SECRET: process.env.SESSION_SECRET || 'default_session_secret',
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || '',
+  DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID || '',
+  DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET || '',
+  GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID || '',
+  GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || '',
+  RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+  EMAIL_FROM: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+  UPLOAD_DIR: process.env.UPLOAD_DIR || './uploads'
+};
 
-# Create env module at the exact absolute path again (to ensure it's there)
-echo "Creating env module at exact absolute path (again)..."
-node fix-absolute-path.js
-
-# Direct fix: modify index.mjs to avoid importing from './env'
-echo "Applying direct fix to index.mjs..."
-node direct-fix.js
-
-# Create module loader and custom loader
-echo "Creating module loader and custom loader..."
-node module-loader-fix.js
-
-# Create hardcoded wrapper
-echo "Creating hardcoded wrapper..."
-node hardcode-env.js
-
-# Try all approaches in sequence
-echo "Starting server with module loader..."
-NODE_OPTIONS="--experimental-modules --experimental-specifier-resolution=node --experimental-loader=./dist/custom-loader.mjs" node dist/module-loader.mjs || {
-  echo "Module loader approach failed, trying hardcoded wrapper..."
-  node dist/hardcoded-wrapper.mjs || {
-    echo "Hardcoded wrapper failed, trying direct server start..."
-    NODE_OPTIONS="--experimental-modules --experimental-specifier-resolution=node" node dist/server.mjs || {
-      echo "All approaches failed, trying index.mjs directly..."
-      NODE_OPTIONS="--experimental-modules --experimental-specifier-resolution=node" node dist/index.mjs
+// Export as default object as well
+export default {
+  DATABASE_URL,
+  SESSION_SECRET,
+  PORT,
+  NODE_ENV,
+  env
+};
+EOF
+      
+      # Copy it to env.mjs as well
+      cp /opt/render/project/src/dist/env /opt/render/project/src/dist/env.mjs
+      
+      # Start the server directly
+      echo "Starting server directly (final attempt)..."
+      node dist/index.mjs
     }
   }
 } 
