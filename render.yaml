@@ -2,7 +2,7 @@ services:
   - type: web
     name: slayz-cc
     env: node
-    buildCommand: npm ci && npm run build
+    buildCommand: rm -rf node_modules dist .vite-cache && npm ci && npm run build
     startCommand: cross-env NODE_ENV=production node dist/index.mjs
     envVars:
       - key: NODE_ENV
