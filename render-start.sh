@@ -8,6 +8,10 @@ set -e
 # Log what we're doing
 echo "Starting Render deployment process..."
 
+# Create env module at the exact absolute path
+echo "Creating env module at exact absolute path..."
+node fix-absolute-path.js
+
 # Run the dependency fix script
 echo "Fixing dependencies..."
 node fix-dependencies.js
@@ -106,6 +110,31 @@ node create-env-stub.js
 echo "Fixing import paths..."
 node fix-imports.js
 
-# Start the server using our simplified approach
-echo "Starting server..."
-NODE_OPTIONS="--experimental-modules --experimental-specifier-resolution=node" node dist/server.mjs 
+# Create env module at the exact absolute path again (to ensure it's there)
+echo "Creating env module at exact absolute path (again)..."
+node fix-absolute-path.js
+
+# Direct fix: modify index.mjs to avoid importing from './env'
+echo "Applying direct fix to index.mjs..."
+node direct-fix.js
+
+# Create module loader and custom loader
+echo "Creating module loader and custom loader..."
+node module-loader-fix.js
+
+# Create hardcoded wrapper
+echo "Creating hardcoded wrapper..."
+node hardcode-env.js
+
+# Try all approaches in sequence
+echo "Starting server with module loader..."
+NODE_OPTIONS="--experimental-modules --experimental-specifier-resolution=node --experimental-loader=./dist/custom-loader.mjs" node dist/module-loader.mjs || {
+  echo "Module loader approach failed, trying hardcoded wrapper..."
+  node dist/hardcoded-wrapper.mjs || {
+    echo "Hardcoded wrapper failed, trying direct server start..."
+    NODE_OPTIONS="--experimental-modules --experimental-specifier-resolution=node" node dist/server.mjs || {
+      echo "All approaches failed, trying index.mjs directly..."
+      NODE_OPTIONS="--experimental-modules --experimental-specifier-resolution=node" node dist/index.mjs
+    }
+  }
+} 
