@@ -82,11 +82,12 @@ const handleDotenvPlugin = {
       return {
         contents: `
           // Simple dotenv implementation without dynamic requires
-          export function config(options = {}) {
+          import fs from 'fs';
+          import path from 'path';
+          
+          export async function config(options = {}) {
             console.log('Using simplified dotenv implementation');
             try {
-              const fs = await import('fs');
-              const path = await import('path');
               const envPath = options.path || '.env';
               
               if (fs.existsSync(envPath)) {
