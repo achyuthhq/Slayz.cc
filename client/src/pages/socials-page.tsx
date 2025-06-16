@@ -75,7 +75,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { Sparkles, Crown } from 'lucide-react';
 import { useLocation } from 'wouter';
-import { ErrorBoundary } from 'react-error-boundary';
 
 const SOCIAL_PLATFORMS = [
   // Popular social platforms
@@ -196,35 +195,7 @@ const PremiumFeatureDialog = ({ open, onOpenChange, featureName }: { open: boole
   );
 };
 
-function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 text-center">
-      <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-6 max-w-lg w-full">
-        <h2 className="text-xl font-bold mb-4">Something went wrong loading the socials page</h2>
-        <p className="text-white/70 mb-4">{error.message}</p>
-        <pre className="bg-black/30 p-4 rounded text-xs overflow-auto text-left mb-4 max-h-[200px]">
-          {error.stack}
-        </pre>
-        <button
-          onClick={resetErrorBoundary}
-          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
-        >
-          Try again
-        </button>
-      </div>
-    </div>
-  );
-}
-
-export default function SocialsPageWrapper() {
-  return (
-    <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => window.location.reload()}>
-      <SocialsPage />
-    </ErrorBoundary>
-  );
-}
-
-function SocialsPage() {
+export default function SocialsPage() {
   console.log("[SocialsPage] Component rendering started");
   const { toast } = useToast();
   const { user } = useAuth();
@@ -294,17 +265,21 @@ function SocialsPage() {
     }
   }, [initialMonoColor]);
 
-  const { data: links = [], isLoading } = useQuery<any[]>({
-    queryKey: ["/api/links"],
-    onError: (error) => {
-      console.error("[SocialsPage] Error fetching links:", error);
+  const { data: links = [], isLoading, error: linksError } = useQuery<any[]>({
+    queryKey: ["/api/links"]
+  });
+
+  // Handle errors with useEffect instead of onError
+  useEffect(() => {
+    if (linksError) {
+      console.error("[SocialsPage] Error fetching links:", linksError);
       toast({
         title: "Error loading social links",
-        description: error instanceof Error ? error.message : "Please try refreshing the page",
+        description: linksError instanceof Error ? linksError.message : "Please try refreshing the page",
         variant: "destructive",
       });
     }
-  });
+  }, [linksError, toast]);
 
   console.log("[SocialsPage] Links data:", links, "isLoading:", isLoading);
 
@@ -683,25 +658,16 @@ function SocialsPage() {
             Link your social media profiles.
           </h1>
           <p className="text-white/70 mt-1">Pick a social media to add to your profile.</p>
-          <div className="mt-2 p-3 bg-black/20 border border-white/5 rounded text-sm text-white/70">
-            {!isPremium ? (
-              <>
-                Free users can add up to 5 social links and only one website link. Upgrade to Premium for unlimited social links and multiple website links.
-                {userLinks.length > 0 && (
-                  <div className="mt-1">
-                    You have used {userLinks.length}/5 available slots.
-                  </div>
-                )}
-              </>
-            ) : (
-              <>
-                Premium users can add unlimited social links and multiple custom website links.
+          {!isPremium && (
+            <div className="mt-2 p-3 bg-black/20 border border-white/5 rounded text-sm text-white/70">
+              Free users can add up to 5 social links and only one website link. Upgrade to Premium for unlimited social links and multiple website links.
+              {userLinks.length > 0 && (
                 <div className="mt-1">
-                  <span className="text-green-400">Note:</span> Each standard social platform can only be added once, but you can add multiple custom website links.
+                  You have used {userLinks.length}/5 available slots.
                 </div>
-              </>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Icon Color Settings Card */}
