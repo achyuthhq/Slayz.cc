@@ -652,320 +652,323 @@ export default function SocialsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <DocumentTitle title="Social Links" />
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col mb-2">
-          <h1 className="text-2xl font-mono font-bold tracking-tighter">
-            Link your social media profiles.
-          </h1>
-          <p className="text-white/70 mt-1">Pick a social media icon to add to your profile.</p>
-          {!isPremium && (
-            <div className="mt-2 p-3 bg-black/20 border border-white/5 rounded text-sm text-white/70">
-              Free users can add up to 5 social links and only one website link. Upgrade to Premium for unlimited social links and multiple website links.
-              {userLinks.length > 0 && (
-                <div className="mt-1">
-                  You have used {userLinks.length}/5 available slots.
-                </div>
-              )}
-            </div>
-          )}
+      
+      {/* Add loading state */}
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <div className="w-16 h-16 border-4 border-t-[#8e44ad] border-[#8e44ad]/30 rounded-full animate-spin"></div>
+          <p className="mt-4 text-white/70">Loading your social links...</p>
         </div>
-
-        {/* Icon Color Settings Card */}
-        <Card className="p-6 border-white/10 backdrop-filter backdrop-blur-sm">
-          <div className="space-y-6">
-            <div className="flex flex-col gap-4">
-              <div className="mb-2 flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <Palette className="w-5 h-5 text-[#8e44ad]" />
-                  Icon Display Style
-                </h3>
-                <br />
-                <div className="text-sm text-white/60">
-                  Choose how your icons will appear
-                </div>
+      ) : (
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col mb-2">
+            <h1 className="text-2xl font-mono font-bold tracking-tighter">
+              Link your social media profiles.
+            </h1>
+            <p className="text-white/70 mt-1">Pick a social media icon to add to your profile.</p>
+            {!isPremium && (
+              <div className="mt-2 p-3 bg-black/20 border border-white/5 rounded text-sm text-white/70">
+                Free users can add up to 5 social links and only one website link. Upgrade to Premium for unlimited social links and multiple website links.
+                {userLinks.length > 0 && (
+                  <div className="mt-1">
+                    You have used {userLinks.length}/5 available slots.
+                  </div>
+                )}
               </div>
-
-              <div className="grid gap-6">
-                <RadioGroup
-                  value={colorMode}
-                  onValueChange={handleColorModeChange}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                >
-                  <div>
-                    <RadioGroupItem
-                      value="multi"
-                      id="multi-chrome"
-                      className="peer sr-only"
-                    />
-                    <Label
-                      htmlFor="multi-chrome"
-                      className="flex flex-col items-center justify-between rounded-xl border-2 border-[#8e44ad]/20 bg-[#8e44ad]/10 p-5
-                        hover:bg-[#8e44ad]/20 hover:border-[#8e44ad]/30 transition-all duration-200
-                        peer-data-[state=checked]:border-[#8e44ad]/50 [&:has([data-state=checked])]:border-[#8e44ad]/50
-                        [&:has([data-state=checked])]:bg-[#8e44ad]/20 [&:has([data-state=checked])]:shadow-md cursor-pointer"
-                    >
-                      <div className="flex gap-5 justify-center mb-5 bg-[#8e44ad]/5 p-4 rounded-lg w-full">
-                        <Twitter className="w-5 h-5 text-[#1DA1F2]" />
-                        <Instagram className="w-5 h-5 text-[#E4405F]" />
-                        <SiDiscord className="w-5 h-5 text-[#5865F2]" />
-                        <SiSpotify className="w-5 h-5 text-[#1DB954]" />
-                      </div>
-                      <div className="font-medium">Original Colors</div>
-                      <div className="text-sm text-white/70 text-center mt-1">Each platform's official brand color</div>
-                    </Label>
-                  </div>
-
-                  <div>
-                    <RadioGroupItem
-                      value="mono"
-                      id="mono-chrome"
-                      className="peer sr-only"
-                    />
-                    <Label
-                      htmlFor="mono-chrome"
-                      className="flex flex-col items-center justify-between rounded-xl border-2 border-[#8e44ad]/20 bg-[#8e44ad]/10 p-5
-                        hover:bg-[#8e44ad]/20 hover:border-[#8e44ad]/30 transition-all duration-200
-                        peer-data-[state=checked]:border-[#8e44ad]/50 [&:has([data-state=checked])]:border-[#8e44ad]/50
-                        [&:has([data-state=checked])]:bg-[#8e44ad]/20 [&:has([data-state=checked])]:shadow-md cursor-pointer"
-                    >
-                      <div className="flex gap-5 justify-center mb-5 bg-[#8e44ad]/5 p-4 rounded-lg w-full">
-                        <Twitter className="w-5 h-5" style={{ color: monoColor }} />
-                        <Instagram className="w-5 h-5" style={{ color: monoColor }} />
-                        <SiDiscord className="w-5 h-5" style={{ color: monoColor }} />
-                        <SiSpotify className="w-5 h-5" style={{ color: monoColor }} />
-                      </div>
-                      <div className="font-medium">Monochrome</div>
-                      <div className="text-sm text-white/70 text-center mb-3 mt-1">Single custom color for all icons</div>
-                      <Input
-                        type="color"
-                        value={monoColor}
-                        onChange={(e) => setMonoColor(e.target.value)}
-                        className="h-8 w-full bg-[#8e44ad]/10 border-[#8e44ad]/20 hover:border-[#8e44ad]/30 cursor-pointer"
-                      />
-                    </Label>
-                  </div>
-                </RadioGroup>
-
-                {/* Add a toggle for the glow effect */}
-                <div className="flex items-center justify-between p-4 rounded-lg border-2 border-[#8e44ad]/20 bg-[#8e44ad]/10">
-                  <div>
-                    <h4 className="font-medium">Icon Glow Effect</h4>
-                    <p className="text-sm text-white/70">Enable subtle glow around icons</p>
-                  </div>
-                  <div className="flex items-center">
-                    <input 
-                      type="checkbox" 
-                      id="glow-toggle"
-                      checked={glowEnabled}
-                      onChange={(e) => setGlowEnabled(e.target.checked)}
-                      className="sr-only"
-                    />
-                    <label 
-                      htmlFor="glow-toggle"
-                      className={`relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 ease-in-out
-                        ${glowEnabled ? 'bg-[#8e44ad]' : 'bg-[#8e44ad]/30'}
-                      `}
-                    >
-                      <span 
-                        className={`absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 ease-in-out
-                          ${glowEnabled ? 'transform translate-x-6' : ''}
-                        `}
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={() => {
-                    const updatedTheme = {
-                      ...theme,
-                      socialIcons: {
-                        colorMode,
-                        monoColor: colorMode === "mono" ? monoColor : undefined,
-                        glowEnabled: glowEnabled
-                      }
-                    };
-                    updateThemeMutation.mutate({ theme: updatedTheme });
-                  }}
-                  disabled={updateThemeMutation.isPending}
-                  className="mt-2 bg-[#8e44ad] hover:bg-[#9b59b6] text-white"
-                >
-                  {updateThemeMutation.isPending ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white/20 border-t-white/80 rounded-full animate-spin"></div>
-                      Applying...
-                    </div>
-                  ) : "Apply Color Settings"}
-                </Button>
-              </div>
-            </div>
+            )}
           </div>
-        </Card>
 
-        {/* Social Icon Grid */}
-        <Card className="p-6 border-white/10 backdrop-filter backdrop-blur-sm">
-          <div className="space-y-6">
-            {/* Icon Grid */}
-            <div
-              className={`grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 2xl:grid-cols-15
-              gap-2 transition-all duration-300 ${animating === "add" ? "scale-105" : ""}`}
-            >
-              {SOCIAL_PLATFORMS.map((platform) => {
-                // Check if this platform is already added by the user
-                const isAdded = links.some(link => link.icon === platform.id);
+          {/* Icon Color Settings Card */}
+          <Card className="p-6 border-white/10 backdrop-filter backdrop-blur-sm">
+            <div className="space-y-6">
+              <div className="flex flex-col gap-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Palette className="w-5 h-5 text-[#8e44ad]" />
+                    Icon Display Style
+                  </h3>
+                  <br />
+                  <div className="text-sm text-white/60">
+                    Choose how your icons will appear
+                  </div>
+                </div>
 
-                return (
-                  <div
-                    key={platform.id}
-                    onClick={() => {
-                      if (!isAdded) {
-                        handleIconSelect(platform.id);
-                      } else {
-                        toast({
-                          title: "Platform already added",
-                          description: "Edit or delete the existing link instead"
-                        });
-                      }
-                    }}
-                    className={`relative p-1 sm:p-2 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer
-                      ${isAdded
-                        ? 'bg-[#8e44ad]/30 border-[#8e44ad]/50'
-                        : 'bg-[#8e44ad]/10 hover:bg-[#8e44ad]/20 active:scale-95 hover:scale-105'
-                      } border border-[#8e44ad]/20 aspect-square`}
+                <div className="grid gap-6">
+                  <RadioGroup
+                    value={colorMode}
+                    onValueChange={handleColorModeChange}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
                   >
-                    <platform.icon
-                      className="w-8 h-8"
-                      style={{ color: colorMode === "multi" ? platform.color : monoColor }}
-                    />
-                    {isAdded && (
-                      <div className="absolute -top-1 -right-1 bg-[#8e44ad] text-white rounded-full w-4 h-4 flex items-center justify-center">
-                        <Check className="w-3 h-3" />
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                    <div>
+                      <RadioGroupItem
+                        value="multi"
+                        id="multi-chrome"
+                        className="peer sr-only"
+                      />
+                      <Label
+                        htmlFor="multi-chrome"
+                        className="flex flex-col items-center justify-between rounded-xl border-2 border-[#8e44ad]/20 bg-[#8e44ad]/10 p-5
+                          hover:bg-[#8e44ad]/20 hover:border-[#8e44ad]/30 transition-all duration-200
+                          peer-data-[state=checked]:border-[#8e44ad]/50 [&:has([data-state=checked])]:border-[#8e44ad]/50
+                          [&:has([data-state=checked])]:bg-[#8e44ad]/20 [&:has([data-state=checked])]:shadow-md cursor-pointer"
+                      >
+                        <div className="flex gap-5 justify-center mb-5 bg-[#8e44ad]/5 p-4 rounded-lg w-full">
+                          <Twitter className="w-5 h-5 text-[#1DA1F2]" />
+                          <Instagram className="w-5 h-5 text-[#E4405F]" />
+                          <SiDiscord className="w-5 h-5 text-[#5865F2]" />
+                          <SiSpotify className="w-5 h-5 text-[#1DB954]" />
+                        </div>
+                        <div className="font-medium">Original Colors</div>
+                        <div className="text-sm text-white/70 text-center mt-1">Each platform's official brand color</div>
+                      </Label>
+                    </div>
 
-            {/* Draggable Links List */}
-            <div className="mt-10">
-              <div className="mb-6 flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <div className="flex flex-col">
-                    <ChevronUp className="w-5 h-5 text-[#8e44ad]" />
-                    <ChevronDown className="w-5 h-5 text-[#8e44ad] -mt-2" />
+                    <div>
+                      <RadioGroupItem
+                        value="mono"
+                        id="mono-chrome"
+                        className="peer sr-only"
+                      />
+                      <Label
+                        htmlFor="mono-chrome"
+                        className="flex flex-col items-center justify-between rounded-xl border-2 border-[#8e44ad]/20 bg-[#8e44ad]/10 p-5
+                          hover:bg-[#8e44ad]/20 hover:border-[#8e44ad]/30 transition-all duration-200
+                          peer-data-[state=checked]:border-[#8e44ad]/50 [&:has([data-state=checked])]:border-[#8e44ad]/50
+                          [&:has([data-state=checked])]:bg-[#8e44ad]/20 [&:has([data-state=checked])]:shadow-md cursor-pointer"
+                      >
+                        <div className="flex gap-5 justify-center mb-5 bg-[#8e44ad]/5 p-4 rounded-lg w-full">
+                          <Twitter className="w-5 h-5" style={{ color: monoColor }} />
+                          <Instagram className="w-5 h-5" style={{ color: monoColor }} />
+                          <SiDiscord className="w-5 h-5" style={{ color: monoColor }} />
+                          <SiSpotify className="w-5 h-5" style={{ color: monoColor }} />
+                        </div>
+                        <div className="font-medium">Monochrome</div>
+                        <div className="text-sm text-white/70 text-center mb-3 mt-1">Single custom color for all icons</div>
+                        <Input
+                          type="color"
+                          value={monoColor}
+                          onChange={(e) => setMonoColor(e.target.value)}
+                          className="h-8 w-full bg-[#8e44ad]/10 border-[#8e44ad]/20 hover:border-[#8e44ad]/30 cursor-pointer"
+                        />
+                      </Label>
+                    </div>
+                  </RadioGroup>
+
+                  {/* Add a toggle for the glow effect */}
+                  <div className="flex items-center justify-between p-4 rounded-lg border-2 border-[#8e44ad]/20 bg-[#8e44ad]/10">
+                    <div>
+                      <h4 className="font-medium">Icon Glow Effect</h4>
+                      <p className="text-sm text-white/70">Enable subtle glow around icons</p>
+                    </div>
+                    <div className="flex items-center">
+                      <input 
+                        type="checkbox" 
+                        id="glow-toggle"
+                        checked={glowEnabled}
+                        onChange={(e) => setGlowEnabled(e.target.checked)}
+                        className="sr-only"
+                      />
+                      <label 
+                        htmlFor="glow-toggle"
+                        className={`relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 ease-in-out
+                          ${glowEnabled ? 'bg-[#8e44ad]' : 'bg-[#8e44ad]/30'}
+                        `}
+                      >
+                        <span 
+                          className={`absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 ease-in-out
+                            ${glowEnabled ? 'transform translate-x-6' : ''}
+                          `}
+                        />
+                      </label>
+                    </div>
                   </div>
-                  Your Social Links
-                </h3>
-                <div className="text-sm text-white/60 italic">
-                  Reorder using arrows
+
+                  <Button
+                    onClick={() => {
+                      const updatedTheme = {
+                        ...theme,
+                        socialIcons: {
+                          colorMode,
+                          monoColor: colorMode === "mono" ? monoColor : undefined,
+                          glowEnabled: glowEnabled
+                        }
+                      };
+                      updateThemeMutation.mutate({ theme: updatedTheme });
+                    }}
+                    disabled={updateThemeMutation.isPending}
+                    className="mt-2 bg-[#8e44ad] hover:bg-[#9b59b6] text-white"
+                  >
+                    {updateThemeMutation.isPending ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/20 border-t-white/80 rounded-full animate-spin"></div>
+                        Applying...
+                      </div>
+                    ) : "Apply Color Settings"}
+                  </Button>
                 </div>
               </div>
-
-              {isLoading ? (
-                <div className="space-y-3">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-16 bg-[#8e44ad]/10 animate-pulse rounded-lg"></div>
-                  ))}
-                </div>
-              ) : links.length === 0 ? (
-                <div className="text-center py-12 border border-dashed border-[#8e44ad]/30 rounded-xl bg-gradient-to-b from-[#8e44ad]/10 to-transparent">
-                  <p className="text-white/60">
-                    Click on an icon above to add your first social link
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <div className="text-sm text-center text-white/60 mb-4 pb-2 border-b border-dashed border-[#8e44ad]/20">
-                    <p>Use the <ChevronUp className="w-4 h-4 inline-block mx-1 text-white/80" /> <ChevronDown className="w-4 h-4 inline-block mx-1 text-white/80" /> buttons to reorder your links</p>
-                  </div>
-                  <div className={`space-y-3 transition-all duration-300 ${animating === "remove" ? "scale-95" : ""} ${animating === "add" ? "scale-105" : ""} ${animating === "reorder" ? "scale-[1.02]" : ""}`}>
-                    {userLinks.map((link, index) => {
-                      const platform = SOCIAL_PLATFORMS.find(p => p.id === link.icon) || SOCIAL_PLATFORMS.find(p => p.id === 'website');
-                      return (
-                        <div
-                          key={link.id.toString()}
-                          className={`flex items-center justify-between p-4 rounded-xl 
-                            bg-[#8e44ad]/10 hover:bg-[#8e44ad]/20 border border-[#8e44ad]/20 
-                            hover:border-[#8e44ad]/40 hover:shadow-md
-                            transition-all duration-200`}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="flex flex-col space-y-1">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleMoveUp(index);
-                                }}
-                                disabled={index === 0}
-                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 
-                                  ${index === 0 
-                                    ? 'opacity-30 cursor-not-allowed bg-[#8e44ad]/10' 
-                                    : 'bg-[#8e44ad]/20 hover:bg-[#8e44ad]/50 hover:shadow-md active:scale-90'}`}
-                                aria-label="Move up"
-                              >
-                                <ChevronUp className="w-5 h-5 text-white" />
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleMoveDown(index);
-                                }}
-                                disabled={index === userLinks.length - 1}
-                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200
-                                  ${index === userLinks.length - 1 
-                                    ? 'opacity-30 cursor-not-allowed bg-[#8e44ad]/10' 
-                                    : 'bg-[#8e44ad]/20 hover:bg-[#8e44ad]/50 hover:shadow-md active:scale-90'}`}
-                                aria-label="Move down"
-                              >
-                                <ChevronDown className="w-5 h-5 text-white" />
-                              </button>
-                            </div>
-                            <div
-                              className={`w-8 h-8 rounded-full flex items-center justify-center bg-[#8e44ad]/20`}
-                            >
-                              {platform && <platform.icon className="w-5 h-5" style={{ color: colorMode === "multi" ? platform.color : monoColor }} />}
-                            </div>
-                            <div>
-                              <div className="font-medium">{link.title}</div>
-                              <div className="text-sm text-white/70 truncate max-w-[200px] md:max-w-[300px] lg:max-w-[400px]">{link.url}</div>
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="hover:bg-[#8e44ad]/20 rounded-full"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openEditDialog(link);
-                              }}
-                            >
-                              <Pencil className="w-4 h-4 text-white/70" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="hover:bg-[#8e44ad]/20 rounded-full"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteMutation.mutate(link.id);
-                              }}
-                              disabled={deleteMutation.isPending}
-                            >
-                              <Trash2 className="w-4 h-4 text-white/70" />
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
             </div>
-          </div>
-        </Card>
-      </div>
+          </Card>
+
+          {/* Social Icon Grid */}
+          <Card className="p-6 border-white/10 backdrop-filter backdrop-blur-sm">
+            <div className="space-y-6">
+              {/* Icon Grid */}
+              <div
+                className={`grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 2xl:grid-cols-15
+                gap-2 transition-all duration-300 ${animating === "add" ? "scale-105" : ""}`}
+              >
+                {SOCIAL_PLATFORMS.map((platform) => {
+                  // Check if this platform is already added by the user
+                  const isAdded = links.some(link => link.icon === platform.id);
+
+                  return (
+                    <div
+                      key={platform.id}
+                      onClick={() => {
+                        if (!isAdded) {
+                          handleIconSelect(platform.id);
+                        } else {
+                          toast({
+                            title: "Platform already added",
+                            description: "Edit or delete the existing link instead"
+                          });
+                        }
+                      }}
+                      className={`relative p-1 sm:p-2 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer
+                        ${isAdded
+                          ? 'bg-[#8e44ad]/30 border-[#8e44ad]/50'
+                          : 'bg-[#8e44ad]/10 hover:bg-[#8e44ad]/20 active:scale-95 hover:scale-105'
+                        } border border-[#8e44ad]/20 aspect-square`}
+                    >
+                      <platform.icon
+                        className="w-8 h-8"
+                        style={{ color: colorMode === "multi" ? platform.color : monoColor }}
+                      />
+                      {isAdded && (
+                        <div className="absolute -top-1 -right-1 bg-[#8e44ad] text-white rounded-full w-4 h-4 flex items-center justify-center">
+                          <Check className="w-3 h-3" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Draggable Links List */}
+              <div className="mt-10">
+                <div className="mb-6 flex items-center justify-between">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <div className="flex flex-col">
+                      <ChevronUp className="w-5 h-5 text-[#8e44ad]" />
+                      <ChevronDown className="w-5 h-5 text-[#8e44ad] -mt-2" />
+                    </div>
+                    Your Social Links
+                  </h3>
+                  <div className="text-sm text-white/60 italic">
+                    Reorder using arrows
+                  </div>
+                </div>
+
+                {links.length === 0 ? (
+                  <div className="text-center py-12 border border-dashed border-[#8e44ad]/30 rounded-xl bg-gradient-to-b from-[#8e44ad]/10 to-transparent">
+                    <p className="text-white/60">
+                      Click on an icon above to add your first social link
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-sm text-center text-white/60 mb-4 pb-2 border-b border-dashed border-[#8e44ad]/20">
+                      <p>Use the <ChevronUp className="w-4 h-4 inline-block mx-1 text-white/80" /> <ChevronDown className="w-4 h-4 inline-block mx-1 text-white/80" /> buttons to reorder your links</p>
+                    </div>
+                    <div className={`space-y-3 transition-all duration-300 ${animating === "remove" ? "scale-95" : ""} ${animating === "add" ? "scale-105" : ""} ${animating === "reorder" ? "scale-[1.02]" : ""}`}>
+                      {userLinks.map((link, index) => {
+                        const platform = SOCIAL_PLATFORMS.find(p => p.id === link.icon) || SOCIAL_PLATFORMS.find(p => p.id === 'website');
+                        return (
+                          <div
+                            key={link.id.toString()}
+                            className={`flex items-center justify-between p-4 rounded-xl 
+                              bg-[#8e44ad]/10 hover:bg-[#8e44ad]/20 border border-[#8e44ad]/20 
+                              hover:border-[#8e44ad]/40 hover:shadow-md
+                              transition-all duration-200`}
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="flex flex-col space-y-1">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleMoveUp(index);
+                                  }}
+                                  disabled={index === 0}
+                                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 
+                                    ${index === 0 
+                                      ? 'opacity-30 cursor-not-allowed bg-[#8e44ad]/10' 
+                                      : 'bg-[#8e44ad]/20 hover:bg-[#8e44ad]/50 hover:shadow-md active:scale-90'}`}
+                                  aria-label="Move up"
+                                >
+                                  <ChevronUp className="w-5 h-5 text-white" />
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleMoveDown(index);
+                                  }}
+                                  disabled={index === userLinks.length - 1}
+                                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200
+                                    ${index === userLinks.length - 1 
+                                      ? 'opacity-30 cursor-not-allowed bg-[#8e44ad]/10' 
+                                      : 'bg-[#8e44ad]/20 hover:bg-[#8e44ad]/50 hover:shadow-md active:scale-90'}`}
+                                  aria-label="Move down"
+                                >
+                                  <ChevronDown className="w-5 h-5 text-white" />
+                                </button>
+                              </div>
+                              <div
+                                className={`w-8 h-8 rounded-full flex items-center justify-center bg-[#8e44ad]/20`}
+                              >
+                                {platform && <platform.icon className="w-5 h-5" style={{ color: colorMode === "multi" ? platform.color : monoColor }} />}
+                              </div>
+                              <div>
+                                <div className="font-medium">{link.title}</div>
+                                <div className="text-sm text-white/70 truncate max-w-[200px] md:max-w-[300px] lg:max-w-[400px]">{link.url}</div>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="hover:bg-[#8e44ad]/20 rounded-full"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditDialog(link);
+                                }}
+                              >
+                                <Pencil className="w-4 h-4 text-white/70" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="hover:bg-[#8e44ad]/20 rounded-full"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteMutation.mutate(link.id);
+                                }}
+                                disabled={deleteMutation.isPending}
+                              >
+                                <Trash2 className="w-4 h-4 text-white/70" />
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
 
       {/* Add Link Dialog */}
       <Dialog open={addLinkOpen} onOpenChange={setAddLinkOpen}>
