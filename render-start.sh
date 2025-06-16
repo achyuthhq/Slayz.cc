@@ -17,24 +17,42 @@ if [ ! -f .env ]; then
   echo "SESSION_SECRET=$SESSION_SECRET" >> .env
 fi
 
-# The exact path where Node.js is looking for the module
-TARGET_PATH="/opt/render/project/src/dist/env"
+# Make our module-cache-fix.cjs script executable
+echo "Making module-cache-fix.cjs executable..."
+chmod +x module-cache-fix.cjs
 
-# Function to create the env module
-create_env_module() {
-  echo "Creating env module at $TARGET_PATH..."
-  
-  # Create the directory structure
-  mkdir -p "$(dirname "$TARGET_PATH")" || {
-    echo "Warning: Could not create directory $(dirname "$TARGET_PATH")"
-    # Continue anyway, the directory might already exist
+# Run the module-cache-fix.cjs script to create a fixed version of index.mjs
+echo "Running module-cache-fix.cjs to create a fixed version of index.mjs..."
+node module-cache-fix.cjs
+
+# Check if the fixed version was created successfully
+if [ -f "dist/index.fixed.mjs" ]; then
+  echo "Fixed version created successfully, starting server with index.fixed.mjs..."
+  node dist/index.fixed.mjs || {
+    echo "Failed to start with index.fixed.mjs, trying final-fix.js..."
+    node final-fix.js && node dist/index.mjs
   }
+else
+  echo "Failed to create fixed version, falling back to original methods..."
   
-  # Create the env module file
-  cat > "$TARGET_PATH" << 'EOF' || {
-    echo "Error: Could not write to $TARGET_PATH"
-    return 1
-  }
+  # The exact path where Node.js is looking for the module
+  TARGET_PATH="/opt/render/project/src/dist/env"
+
+  # Function to create the env module
+  create_env_module() {
+    echo "Creating env module at $TARGET_PATH..."
+    
+    # Create the directory structure
+    mkdir -p "$(dirname "$TARGET_PATH")" || {
+      echo "Warning: Could not create directory $(dirname "$TARGET_PATH")"
+      # Continue anyway, the directory might already exist
+    }
+    
+    # Create the env module file
+    cat > "$TARGET_PATH" << 'EOF' || {
+      echo "Error: Could not write to $TARGET_PATH"
+      return 1
+    }
 // Environment variables configuration
 import dotenv from 'dotenv';
 dotenv.config();
@@ -71,32 +89,32 @@ export default {
   env
 };
 EOF
-  
-  # Set file permissions
-  chmod 644 "$TARGET_PATH" || {
-    echo "Warning: Could not set file permissions for $TARGET_PATH"
-    # Continue anyway, permissions might be okay
+    
+    # Set file permissions
+    chmod 644 "$TARGET_PATH" || {
+      echo "Warning: Could not set file permissions for $TARGET_PATH"
+      # Continue anyway, permissions might be okay
+    }
+    
+    # Verify the file was created
+    if [ -f "$TARGET_PATH" ]; then
+      echo "✅ Successfully created env module at $TARGET_PATH"
+      return 0
+    else
+      echo "❌ Failed to create env module at $TARGET_PATH"
+      return 1
+    fi
   }
-  
-  # Verify the file was created
-  if [ -f "$TARGET_PATH" ]; then
-    echo "✅ Successfully created env module at $TARGET_PATH"
-    return 0
-  else
-    echo "❌ Failed to create env module at $TARGET_PATH"
-    return 1
-  fi
-}
 
-# Try to run the env-fix.sh script to create the env module
-echo "Running env-fix.sh to create the env module..."
-if ! bash ./env-fix.sh; then
-  # If the script fails, create the env module directly here
-  echo "env-fix.sh failed, creating env module directly..."
-  create_env_module || {
-    echo "Failed to create env module directly, trying with sudo..."
-    sudo mkdir -p "$(dirname "$TARGET_PATH")" || true
-    sudo bash -c "cat > $TARGET_PATH << 'EOF'
+  # Try to run the env-fix.sh script to create the env module
+  echo "Running env-fix.sh to create the env module..."
+  if ! bash ./env-fix.sh; then
+    # If the script fails, create the env module directly here
+    echo "env-fix.sh failed, creating env module directly..."
+    create_env_module || {
+      echo "Failed to create env module directly, trying with sudo..."
+      sudo mkdir -p "$(dirname "$TARGET_PATH")" || true
+      sudo bash -c "cat > $TARGET_PATH << 'EOF'
 // Environment variables configuration
 import dotenv from 'dotenv';
 dotenv.config();
@@ -133,10 +151,14 @@ export default {
   env
 };
 EOF" || true
-    sudo chmod 644 "$TARGET_PATH" || true
-  }
-fi
+      sudo chmod 644 "$TARGET_PATH" || true
+    }
+  fi
 
-# Start the server
-echo "Starting the server..."
-node dist/index.mjs 
+  # Start the server
+  echo "Starting the server with original index.mjs..."
+  node dist/index.mjs || {
+    echo "Failed to start with original index.mjs, trying final-fix.js..."
+    node final-fix.js && node dist/index.mjs
+  }
+fi 
