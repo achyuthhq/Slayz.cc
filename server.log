@@ -1,0 +1,540 @@
+Starting Render deployment process...
+Installing required packages...
+npm warn using --force Recommended protections disabled.
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: @neondatabase/serverless@1.0.1
+npm warn node_modules/@neondatabase/serverless
+npm warn   peerOptional @neondatabase/serverless@">=0.10.0" from drizzle-orm@0.39.3
+npm warn   node_modules/drizzle-orm
+npm warn     peer drizzle-orm@">=0.36.0" from drizzle-zod@0.7.1
+npm warn     node_modules/drizzle-zod
+npm warn     1 more (the root project)
+npm warn   1 more (the root project)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peerOptional @neondatabase/serverless@">=0.10.0" from drizzle-orm@0.39.3
+npm warn node_modules/drizzle-orm
+npm warn   peer drizzle-orm@">=0.36.0" from drizzle-zod@0.7.1
+npm warn   node_modules/drizzle-zod
+npm warn   1 more (the root project)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: @neondatabase/serverless@1.0.1
+npm warn node_modules/@neondatabase/serverless
+npm warn   peerOptional @neondatabase/serverless@">=0.10.0" from drizzle-orm@0.39.3
+npm warn   node_modules/drizzle-orm
+npm warn     peer drizzle-orm@">=0.36.0" from drizzle-zod@0.7.1
+npm warn     node_modules/drizzle-zod
+npm warn     1 more (the root project)
+npm warn   1 more (the root project)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peerOptional @neondatabase/serverless@">=0.10.0" from drizzle-orm@0.39.3
+npm warn node_modules/drizzle-orm
+npm warn   peer drizzle-orm@">=0.36.0" from drizzle-zod@0.7.1
+npm warn   node_modules/drizzle-zod
+npm warn   1 more (the root project)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19" from @react-three/drei@10.2.0
+npm warn node_modules/@react-three/drei
+npm warn   @react-three/drei@"^10.1.2" from the root project
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.0.0" from @react-three/fiber@9.1.2
+npm warn node_modules/@react-three/fiber
+npm warn   peer @react-three/fiber@"^9.0.0" from @react-three/drei@10.2.0
+npm warn   node_modules/@react-three/drei
+npm warn   2 more (react-three-fiber, the root project)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.0.0" from @react-three/fiber@9.1.2
+npm warn node_modules/@react-three/fiber
+npm warn   peer @react-three/fiber@"^9.0.0" from @react-three/drei@10.2.0
+npm warn   node_modules/@react-three/drei
+npm warn   2 more (react-three-fiber, the root project)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   108 more (@heroui/react-rsc-utils, @heroui/react-utils, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.1.0" from react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: slayz.cc@1.0.0
+npm warn Found: react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   49 more (@heroui/spinner, @heroui/system, @number-flow/react, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peerOptional react-dom@"^19" from @react-three/drei@10.2.0
+npm warn node_modules/@react-three/drei
+npm warn   @react-three/drei@"^10.1.2" from the root project
+npm warn ERESOLVE overriding peer dependency
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @react-three/fiber@9.1.2
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@"^19.0.0" from its-fine@2.0.0
+npm warn   node_modules/@react-three/fiber/node_modules/its-fine
+npm warn     its-fine@"^2.0.0" from @react-three/fiber@9.1.2
+npm warn     node_modules/@react-three/fiber
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^19.0.0" from @react-three/fiber@9.1.2
+npm warn node_modules/@react-three/fiber
+npm warn   @react-three/fiber@"^9.1.2" from the root project
+npm warn   2 more (@react-three/drei, react-three-fiber)
+npm warn
+npm warn Conflicting peer dependency: react@19.1.0
+npm warn node_modules/react
+npm warn   peer react@"^19.0.0" from @react-three/fiber@9.1.2
+npm warn   node_modules/@react-three/fiber
+npm warn     @react-three/fiber@"^9.1.2" from the root project
+npm warn     2 more (@react-three/drei, react-three-fiber)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @react-three/fiber@9.1.2
+npm warn Found: react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   react-dom@"^18.3.1" from the root project
+npm warn   51 more (@heroui/spinner, @number-flow/react, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peerOptional react-dom@"^19.0.0" from @react-three/fiber@9.1.2
+npm warn node_modules/@react-three/fiber
+npm warn   @react-three/fiber@"^9.1.2" from the root project
+npm warn   2 more (@react-three/drei, react-three-fiber)
+npm warn
+npm warn Conflicting peer dependency: react-dom@19.1.0
+npm warn node_modules/react-dom
+npm warn   peerOptional react-dom@"^19.0.0" from @react-three/fiber@9.1.2
+npm warn   node_modules/@react-three/fiber
+npm warn     @react-three/fiber@"^9.1.2" from the root project
+npm warn     2 more (@react-three/drei, react-three-fiber)
+npm warn ERESOLVE overriding peer dependency
+
+up to date, audited 1025 packages in 9s
+
+125 packages are looking for funding
+  run `npm fund` for details
+
+14 vulnerabilities (4 low, 2 moderate, 8 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+Loading environment variables from .env file...
+Creating direct replacement for env module...
+Fixing index.mjs to remove duplicate imports...
+Created backup at dist/index.mjs.bak
+Adding DatabaseStorage class definition...
+Successfully fixed index.mjs
+Starting the server...
+file:///Users/achyuth/Projects/Personal/Slayz.cc-main/dist/index.mjs:1088
+var scryptAsync = promisify(scrypt);
+                  ^
+
+ReferenceError: promisify is not defined
+    at file:///Users/achyuth/Projects/Personal/Slayz.cc-main/dist/index.mjs:1088:19
+    at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.16.0

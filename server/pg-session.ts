@@ -1,13 +1,15 @@
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
-import { env } from "./env";
+
+// Define database URL with fallback
+const DATABASE_URL = process.env.DATABASE_URL || 'postgres://localhost:5432/mydb';
 
 // Create PostgreSQL session store
 const PgStore = connectPgSimple(session);
 
 // Create session store instance with proper SSL configuration for Render
 export const sessionStore = new PgStore({
-  conString: env.DATABASE_URL,
+  conString: DATABASE_URL,
   tableName: 'session', // Default is "session"
   schemaName: 'public', // Default is "public"
   ttl: 86400, // 1 day in seconds

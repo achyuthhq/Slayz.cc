@@ -3,10 +3,17 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as sharedSchema from "../shared/pg-schema";
 import { passwordResetTokens } from "./schema";
-import { env } from "./env";
+
+// Define Render PostgreSQL Database Connection Details
+const RENDER_PG_HOST = process.env.PG_HOST || 'dpg-d1024gogjchc73a9eo6g-a.oregon-postgres.render.com';
+const RENDER_PG_PORT = process.env.PG_PORT || '5432';
+const RENDER_PG_DATABASE = process.env.PG_DATABASE || 'users_prm7';
+const RENDER_PG_USER = process.env.PG_USER || 'users_prm7_user';
+const RENDER_PG_PASSWORD = process.env.PG_PASSWORD || 'krKMHgU02iuLN8jv1Y7O81gJlrCPSow3';
 
 // Create PostgreSQL connection using postgres.js
-const connectionString = env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL || 
+  `postgresql://${RENDER_PG_USER}:${RENDER_PG_PASSWORD}@${RENDER_PG_HOST}/${RENDER_PG_DATABASE}`;
 
 // Configure connection options for Render PostgreSQL
 const queryClient = postgres(connectionString, {

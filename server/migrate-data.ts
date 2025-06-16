@@ -2,7 +2,6 @@ import { db as sqliteDb } from "./db";
 import { db as pgDb } from "./pg-db";
 import { sql } from "drizzle-orm";
 import { checkDatabaseConnection } from "./pg-db";
-import { env } from "./env";
 import fs from "node:fs";
 import path from "node:path";
 

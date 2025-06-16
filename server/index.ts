@@ -1,4 +1,56 @@
-import './env'; // Import environment variables first
+// Import dotenv directly and configure it
+import dotenv from "dotenv";
+import path from "node:path";
+import fs from "node:fs";
+
+// Load environment variables from .env file
+const envPath = path.resolve(process.cwd(), '.env');
+
+if (fs.existsSync(envPath)) {
+  const result = dotenv.config({ path: envPath });
+  if (result.error) {
+    console.error('Error loading .env file:', result.error);
+  } else {
+    console.log('Environment variables loaded from .env');
+  }
+} else {
+  console.warn('.env file not found at', envPath);
+}
+
+// Set default values for required environment variables
+if (!process.env.SESSION_SECRET) {
+  process.env.SESSION_SECRET = 'dev_session_secret_replace_in_production';
+  console.warn('Using default SESSION_SECRET for development');
+}
+
+if (!process.env.PORT) {
+  process.env.PORT = '3000';
+  console.warn('Using default PORT: 3000');
+}
+
+if (!process.env.UPLOAD_DIR) {
+  process.env.UPLOAD_DIR = './uploads';
+  console.warn('Using default UPLOAD_DIR: ./uploads');
+}
+
+// Set placeholder values for optional environment variables
+if (!process.env.DISCORD_CLIENT_ID) {
+  process.env.DISCORD_CLIENT_ID = 'discord_client_id_placeholder';
+}
+
+if (!process.env.DISCORD_CLIENT_SECRET) {
+  process.env.DISCORD_CLIENT_SECRET = 'discord_client_secret_placeholder';
+}
+
+if (!process.env.GITHUB_CLIENT_ID) {
+  process.env.GITHUB_CLIENT_ID = 'github_client_id_placeholder';
+}
+
+if (!process.env.GITHUB_CLIENT_SECRET) {
+  process.env.GITHUB_CLIENT_SECRET = 'github_client_secret_placeholder';
+}
+
+// Import other dependencies
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
