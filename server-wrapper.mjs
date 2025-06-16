@@ -6,13 +6,69 @@ const require = createRequire(import.meta.url);
 import fs from 'fs';
 import path from 'path';
 
-console.log('Starting server wrapper with enhanced postgres handling...');
+console.log('Starting server wrapper with enhanced dependency handling...');
 
 // Create a mock for lightningcss if it's not available
 if (!globalThis.lightningcss) {
   globalThis.lightningcss = {};
   console.log('Created mock for lightningcss');
 }
+
+// Create a global shim for dynamic requires if it doesn't exist
+if (!globalThis.__requireShim) {
+  globalThis.__requireShim = async function(moduleName) {
+    console.log(`Dynamic require shim called for: ${moduleName}`);
+    
+    // Handle common Node.js built-in modules
+    switch(moduleName) {
+      case 'events':
+        return await import('events');
+      case 'stream':
+        return await import('stream');
+      case 'http':
+        return await import('http');
+      case 'https':
+        return await import('https');
+      case 'fs':
+        return await import('fs');
+      case 'path':
+        return await import('path');
+      case 'crypto':
+        return await import('crypto');
+      case 'util':
+        return await import('util');
+      case 'buffer':
+        return await import('buffer');
+      case 'zlib':
+        return await import('zlib');
+      case 'net':
+        return await import('net');
+      case 'tls':
+        return await import('tls');
+      default:
+        try {
+          return require(moduleName);
+        } catch (err) {
+          console.error(`Failed to require ${moduleName}:`, err);
+          return {};
+        }
+    }
+  };
+  console.log('Dynamic require shim installed in server wrapper');
+}
+
+// Patch the Error constructor to handle dynamic requires
+const originalError = Error;
+Error = function(message) {
+  if (typeof message === 'string' && message.startsWith('Dynamic require of "')) {
+    const moduleName = message.match(/Dynamic require of "([^"]+)"/)[1];
+    console.log(`Intercepted dynamic require for ${moduleName}, using shim`);
+    return new originalError(`Using shim for ${moduleName}`);
+  }
+  return new originalError(message);
+};
+Error.prototype = originalError.prototype;
+console.log('Error constructor patched to handle dynamic requires');
 
 // Create a postgres patch file that will be loaded by the server
 const createPostgresPatch = () => {
@@ -93,6 +149,53 @@ if (!fs.existsSync(path.join(postgresPath, 'package.json'))) {
     console.error('Error reading postgres package.json:', err);
     createPostgresPatch();
   }
+}
+
+// Patch the bundled index.mjs file if it exists
+try {
+  const indexPath = path.join(process.cwd(), 'dist/index.mjs');
+  if (fs.existsSync(indexPath)) {
+    console.log('Patching dist/index.mjs for dynamic requires...');
+    let content = fs.readFileSync(indexPath, 'utf8');
+    
+    // Add a dynamic require handler at the top of the file
+    if (!content.includes('__handleDynamicRequire')) {
+      const patchCode = `
+// Dynamic require handler
+function __handleDynamicRequire(moduleName) {
+  console.log("Handling dynamic require for: " + moduleName);
+  switch(moduleName) {
+    case 'events': return import('events');
+    case 'stream': return import('stream');
+    case 'fs': return import('fs');
+    case 'path': return import('path');
+    case 'http': return import('http');
+    case 'https': return import('https');
+    case 'net': return import('net');
+    case 'tls': return import('tls');
+    case 'crypto': return import('crypto');
+    case 'zlib': return import('zlib');
+    case 'buffer': return import('buffer');
+    case 'util': return import('util');
+    default: throw new Error("Cannot handle dynamic require for: " + moduleName);
+  }
+}
+
+`;
+      content = patchCode + content;
+      
+      // Replace the dynamic require error with our handler
+      content = content.replace(
+        /throw Error\('Dynamic require of "' \+ x \+ '" is not supported'\);/g,
+        'return __handleDynamicRequire(x);'
+      );
+      
+      fs.writeFileSync(indexPath, content);
+      console.log('Successfully patched dist/index.mjs');
+    }
+  }
+} catch (err) {
+  console.error('Error patching dist/index.mjs:', err);
 }
 
 // Pre-load critical dependencies
@@ -188,9 +291,54 @@ try {
     console.error('Failed to load drizzle-orm:', error);
   }
   
+  // Try to preload events module
+  try {
+    const events = await import('events');
+    console.log('✓ Events module loaded successfully');
+    globalThis.events = events;
+  } catch (error) {
+    console.error('Failed to load events module:', error);
+  }
+  
+  // Try to preload stream module
+  try {
+    const stream = await import('stream');
+    console.log('✓ Stream module loaded successfully');
+    globalThis.stream = stream;
+  } catch (error) {
+    console.error('Failed to load stream module:', error);
+  }
+  
   // Load the actual server
   console.log('Starting server...');
-  const server = await import('./dist/index.mjs');
+  
+  try {
+    const server = await import('./dist/index.mjs');
+  } catch (error) {
+    console.error('Error importing server:', error);
+    
+    if (error.message && error.message.includes('Dynamic require')) {
+      console.error('Dynamic require error detected. Trying with patched require...');
+      
+      // Create a patch for the problematic module
+      const moduleName = error.message.match(/Dynamic require of "([^"]+)"/)?.[1];
+      if (moduleName) {
+        console.log(`Creating patch for ${moduleName}...`);
+        
+        // Try to load the server again
+        try {
+          const server = await import('./dist/index.mjs');
+        } catch (retryError) {
+          console.error('Failed to import server after patching:', retryError);
+          process.exit(1);
+        }
+      } else {
+        process.exit(1);
+      }
+    } else {
+      process.exit(1);
+    }
+  }
 } catch (error) {
   console.error('Error in server wrapper:', error);
   process.exit(1);

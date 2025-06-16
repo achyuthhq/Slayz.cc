@@ -23,9 +23,13 @@ node postgres-patch.js
 echo "Creating dotenv patch..."
 node dotenv-patch.js
 
+# Create ws patch to fix dynamic require issue
+echo "Creating ws patch..."
+node ws-patch.js
+
 # Ensure all external modules are installed correctly
 echo "Ensuring external modules are installed..."
-npm install --no-save postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 lightningcss dotenv
+npm install --no-save postgres@3.4.7 pg connect-pg-simple bcrypt resend better-sqlite3 lightningcss dotenv ws events stream
 
 # Verify postgres is installed
 if [ ! -d "node_modules/postgres" ]; then
@@ -91,20 +95,86 @@ echo "Creating direct postgres module in dist directory..."
 node create-postgres-module.js
 
 # Try to fix the dotenv dynamic require issue by patching the index.mjs file
-echo "Patching index.mjs to fix dotenv dynamic require issue..."
+echo "Patching index.mjs to fix dynamic require issues..."
 if [ -f "dist/index.mjs" ]; then
   # Create a backup
   cp dist/index.mjs dist/index.mjs.bak
   
-  # Replace dynamic require with static import
+  # Replace dynamic requires with static imports
   sed -i 's/require("fs")/import("fs")/g' dist/index.mjs
   sed -i 's/require("path")/import("path")/g' dist/index.mjs
+  sed -i 's/require("events")/import("events")/g' dist/index.mjs
+  sed -i 's/require("stream")/import("stream")/g' dist/index.mjs
+  sed -i 's/require("http")/import("http")/g' dist/index.mjs
+  sed -i 's/require("https")/import("https")/g' dist/index.mjs
+  sed -i 's/require("net")/import("net")/g' dist/index.mjs
+  sed -i 's/require("tls")/import("tls")/g' dist/index.mjs
+  sed -i 's/require("crypto")/import("crypto")/g' dist/index.mjs
+  sed -i 's/require("zlib")/import("zlib")/g' dist/index.mjs
+  sed -i 's/require("buffer")/import("buffer")/g' dist/index.mjs
+  sed -i 's/require("util")/import("util")/g' dist/index.mjs
   
   echo "index.mjs patched for dynamic requires"
 else
   echo "dist/index.mjs not found, skipping patch"
 fi
 
-# Start the server using our wrapper
+# Create a shim for dynamic require
+echo "Creating dynamic require shim..."
+cat > dist/dynamic-require-shim.mjs << 'EOF'
+// This is a shim to handle dynamic requires in ESM modules
+import fs from 'fs';
+import path from 'path';
+import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const require = createRequire(import.meta.url);
+
+// Create a global shim for dynamic requires
+globalThis.__requireShim = function(moduleName) {
+  console.log(`Dynamic require shim called for: ${moduleName}`);
+  
+  // Handle common Node.js built-in modules
+  switch(moduleName) {
+    case 'events':
+      return import('events');
+    case 'stream':
+      return import('stream');
+    case 'http':
+      return import('http');
+    case 'https':
+      return import('https');
+    case 'fs':
+      return import('fs');
+    case 'path':
+      return import('path');
+    case 'crypto':
+      return import('crypto');
+    case 'util':
+      return import('util');
+    case 'buffer':
+      return import('buffer');
+    case 'zlib':
+      return import('zlib');
+    case 'net':
+      return import('net');
+    case 'tls':
+      return import('tls');
+    default:
+      try {
+        return require(moduleName);
+      } catch (err) {
+        console.error(`Failed to require ${moduleName}:`, err);
+        return {};
+      }
+  }
+};
+
+console.log('Dynamic require shim installed');
+EOF
+
+# Start the server using our wrapper with the shim preloaded
 echo "Starting server with wrapper..."
-NODE_OPTIONS="--experimental-modules --experimental-specifier-resolution=node" node server-wrapper.mjs 
+NODE_OPTIONS="--experimental-modules --experimental-specifier-resolution=node --import=./dist/dynamic-require-shim.mjs" node server-wrapper.mjs 

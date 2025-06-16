@@ -17,7 +17,31 @@ const externalModules = [
   'express-session',
   'lightningcss',
   'dotenv', // Add dotenv to external modules
-  'node:http', // Node.js built-in modules
+  'ws', // Add ws to external modules
+  'events', // Add events to external modules
+  'stream', // Add stream to external modules
+  'http', // Node.js built-in modules without node: prefix
+  'https',
+  'fs',
+  'path',
+  'crypto',
+  'stream',
+  'util',
+  'events',
+  'buffer',
+  'os',
+  'url',
+  'child_process',
+  'zlib',
+  'http2',
+  'net',
+  'tls',
+  'dns',
+  'querystring',
+  'readline',
+  'assert',
+  // Node.js built-in modules with node: prefix
+  'node:http',
   'node:fs',
   'node:path',
   'node:crypto',
@@ -122,6 +146,48 @@ const handleDotenvPlugin = {
   },
 };
 
+// Create a plugin to handle dynamic requires
+const handleDynamicRequiresPlugin = {
+  name: 'handle-dynamic-requires',
+  setup(build) {
+    // Intercept all require calls in the code
+    build.onLoad({ filter: /\.js$/ }, async (args) => {
+      try {
+        const source = await fs.promises.readFile(args.path, 'utf8');
+        
+        // Replace dynamic requires with static imports or mocks
+        const modifiedSource = source
+          // Replace require('events') with a direct import
+          .replace(/require\(['"]events['"]\)/g, "await import('events')")
+          .replace(/require\(['"]stream['"]\)/g, "await import('stream')")
+          .replace(/require\(['"]http['"]\)/g, "await import('http')")
+          .replace(/require\(['"]https['"]\)/g, "await import('https')")
+          .replace(/require\(['"]net['"]\)/g, "await import('net')")
+          .replace(/require\(['"]tls['"]\)/g, "await import('tls')")
+          .replace(/require\(['"]crypto['"]\)/g, "await import('crypto')")
+          .replace(/require\(['"]zlib['"]\)/g, "await import('zlib')")
+          .replace(/require\(['"]buffer['"]\)/g, "await import('buffer')")
+          .replace(/require\(['"]util['"]\)/g, "await import('util')")
+          .replace(/require\(['"]path['"]\)/g, "await import('path')")
+          .replace(/require\(['"]fs['"]\)/g, "await import('fs')");
+          
+        // Only return modified content if we actually made changes
+        if (source !== modifiedSource) {
+          return {
+            contents: modifiedSource,
+            loader: 'js',
+          };
+        }
+        
+        // Otherwise, let esbuild handle it normally
+        return null;
+      } catch (error) {
+        return null;
+      }
+    });
+  },
+};
+
 // Build configuration
 const buildOptions = {
   entryPoints: ['server/index.ts'],
@@ -135,7 +201,12 @@ const buildOptions = {
   sourcemap: true,
   target: ['node18'],
   logLevel: 'info',
-  plugins: [handleLightningCSSPlugin, handlePostgresPlugin, handleDotenvPlugin],
+  plugins: [
+    handleLightningCSSPlugin, 
+    handlePostgresPlugin, 
+    handleDotenvPlugin,
+    handleDynamicRequiresPlugin
+  ],
   define: {
     'process.env.NODE_ENV': '"production"'
   },
