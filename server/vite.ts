@@ -73,23 +73,37 @@ export async function setupVite(app: Express, server: Server) {
 export function serveStatic(app: Express) {
   // In production, the static files are in dist/public
   // We need to use the correct path whether we're running from source or from the bundled output
-  let distPath = path.resolve(process.cwd(), "dist", "public");
+  const possiblePaths = [
+    path.resolve(process.cwd(), "dist", "public"),       // Normal production build
+    path.resolve(process.cwd(), "public"),               // Possible fallback
+    path.resolve(__dirname, "public"),                   // When running from bundled code
+    path.resolve(__dirname, "..", "public"),             // Another possible location
+    // Render-specific paths
+    path.resolve("/opt/render/project/src/dist/public"), // Render's project path
+    path.resolve("/opt/render/project/src/public")       // Alternative Render path
+  ];
   
-  // Check if the path exists
-  if (!fs.existsSync(distPath)) {
-    // Try alternative path (when running from bundled code)
-    distPath = path.resolve(process.cwd(), "public");
-    
-    // If neither path exists, throw an error
-    if (!fs.existsSync(distPath)) {
-      console.error(`Could not find the build directory at ${distPath} or ${path.resolve(process.cwd(), "dist", "public")}`);
-      console.error('Current directory:', process.cwd());
-      console.error('Directory contents:', fs.readdirSync(process.cwd()));
-      
-      throw new Error(
-        `Could not find the build directory. Make sure to build the client first with 'npm run build'`
-      );
+  // Find the first path that exists
+  let distPath = null;
+  for (const pathToCheck of possiblePaths) {
+    console.log(`Checking for static files at: ${pathToCheck}`);
+    if (fs.existsSync(pathToCheck)) {
+      distPath = pathToCheck;
+      console.log(`Found static files at: ${distPath}`);
+      break;
     }
+  }
+  
+  // If no valid path was found, throw an error
+  if (!distPath) {
+    console.error("Could not find static files in any of these locations:");
+    possiblePaths.forEach(p => console.error(`- ${p}`));
+    console.error("Current directory:", process.cwd());
+    console.error("Directory contents:", fs.readdirSync(process.cwd()));
+    
+    throw new Error(
+      `Could not find the build directory. Make sure to build the client first with 'npm run build'`
+    );
   }
 
   console.log(`Serving static files from: ${distPath}`);

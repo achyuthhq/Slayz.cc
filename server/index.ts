@@ -135,14 +135,25 @@ app.use((req, res, next) => {
       res.status(status).json({ message });
     });
 
+    // Force production mode when running on Render
+    const isRender = process.env.RENDER === 'true' || !!process.env.RENDER_INTERNAL_HOSTNAME;
+    const isProduction = process.env.NODE_ENV === 'production' || isRender;
+    
+    if (isRender) {
+      console.log('Detected Render environment, forcing production mode');
+      // Don't modify NODE_ENV directly as it's read-only in some environments
+    }
+    
+    console.log(`Running in ${isProduction ? 'production' : 'development'} mode`);
+
     // importantly only setup vite in development and after
     // setting up all the other routes so the catch-all route
     // doesn't interfere with the other routes
-    if (app.get("env") === "development") {
+    if (!isProduction) {
       console.log('Setting up Vite in development mode...');
       await setupVite(app, httpServer);
     } else {
-      console.log('Setting up static file serving...');
+      console.log('Setting up static file serving for production mode...');
       serveStatic(app);
     }
 
