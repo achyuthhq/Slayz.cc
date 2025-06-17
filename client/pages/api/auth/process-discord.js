@@ -41,7 +41,7 @@ export default async function handler(req, res) {
       },
       body: new URLSearchParams({
         client_id: process.env.DISCORD_CLIENT_ID || '1350091089398464574',
-        client_secret: process.env.DISCORD_CLIENT_SECRET || 'W_fP3Y-aS-FFCQIiwo0DVtDujzpxq-Qx',
+        client_secret: process.env.DISCORD_CLIENT_SECRET || 'R68zlpmNmiptzLuCeGQJMrqa1_MiKzXs',
         grant_type: 'authorization_code',
         code: code,
         redirect_uri: redirectUri,
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
       console.error('Discord token exchange failed:', errorText);
       
       // Check if this is likely due to missing client secret
-      if (errorText.includes('invalid_client') && (!process.env.DISCORD_CLIENT_SECRET || process.env.DISCORD_CLIENT_SECRET === 'W_fP3Y-aS-FFCQIiwo0DVtDujzpxq-Qx')) {
+      if (errorText.includes('invalid_client') && (!process.env.DISCORD_CLIENT_SECRET || process.env.DISCORD_CLIENT_SECRET === 'R68zlpmNmiptzLuCeGQJMrqa1_MiKzXs')) {
         console.error('Discord client secret appears to be missing or invalid');
         
         // For demo purposes, bypass the token exchange and provide mock data
