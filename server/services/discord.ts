@@ -116,18 +116,27 @@ export async function exchangeCodeForToken(code: string) {
   try {
     const config = getDiscordConfig();
     console.log(`Exchanging code for token with callback URL: ${config.callbackUrl}`);
-    console.log(`Using client ID: ${config.clientId.substring(0, 6)}... (${config.clientId.length} chars)`);
-    console.log(`Using client secret: (${config.clientSecret.length} chars)`);
+    console.log(`Using client ID: ${config.clientId} (${config.clientId.length} chars)`);
+    console.log(`Using client secret length: (${config.clientSecret.length} chars)`);
+    
+    // Prepare the data object separately for better debugging
+    const data = {
+      client_id: config.clientId,
+      client_secret: config.clientSecret,
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: config.callbackUrl,
+    };
+    
+    console.log("Token exchange payload:", {
+      ...data,
+      client_secret: '***REDACTED***',
+      code: '***REDACTED***'
+    });
     
     const tokenResponse = await axios.post(
       "https://discord.com/api/oauth2/token",
-      querystring.stringify({
-        client_id: config.clientId,
-        client_secret: config.clientSecret,
-        grant_type: "authorization_code",
-        code,
-        redirect_uri: config.callbackUrl,
-      }),
+      querystring.stringify(data),
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -146,7 +155,8 @@ export async function exchangeCodeForToken(code: string) {
     // Add more detailed error logging
     if ((error as any)?.response) {
       console.error("Response status:", (error as any).response.status);
-      console.error("Response data:", (error as any).response.data);
+      console.error("Response data:", JSON.stringify((error as any).response.data));
+      console.error("Response headers:", JSON.stringify((error as any).response.headers));
     }
     
     throw error;
