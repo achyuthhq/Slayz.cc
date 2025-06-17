@@ -194,8 +194,8 @@ export function setupAuth(app: Express) {
   passport.use(
     new DiscordStrategy(
       {
-        clientID: process.env.DISCORD_CLIENT_ID,
-        clientSecret: process.env.DISCORD_CLIENT_SECRET,
+        clientID: String(process.env.DISCORD_CLIENT_ID),
+        clientSecret: String(process.env.DISCORD_CLIENT_SECRET),
         callbackURL: process.env.DISCORD_REDIRECT_URI || "https://slayz.cc/api/auth/callback/discord",
         scope: ["identify", "email"],
         passReqToCallback: true,

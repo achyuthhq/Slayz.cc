@@ -13,8 +13,8 @@ export type DiscordConfig = z.infer<typeof discordConfigSchema>;
 
 export const getDiscordConfig = (): DiscordConfig => {
   const config = {
-    clientId: process.env.DISCORD_CLIENT_ID || "",
-    clientSecret: process.env.DISCORD_CLIENT_SECRET || "",
+    clientId: String(process.env.DISCORD_CLIENT_ID || ""),
+    clientSecret: String(process.env.DISCORD_CLIENT_SECRET || ""),
     callbackUrl: process.env.DISCORD_REDIRECT_URI || "https://slayz.cc/api/auth/callback/discord",
     scopes: ["identify", "email"],
   };
@@ -155,7 +155,7 @@ export async function exchangeCodeForToken(code: string) {
 
 export function getAuthUrl() {
   const config = getDiscordConfig();
-  const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${process.env.DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(
+  const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(
     config.callbackUrl
   )}&response_type=code&scope=${encodeURIComponent(config.scopes.join(' '))}`;
   
