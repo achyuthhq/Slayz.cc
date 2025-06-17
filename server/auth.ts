@@ -197,7 +197,7 @@ export function setupAuth(app: Express) {
         clientID: process.env.DISCORD_CLIENT_ID,
         clientSecret: process.env.DISCORD_CLIENT_SECRET,
         callbackURL: process.env.DISCORD_REDIRECT_URI || "https://slayz.cc/api/auth/callback/discord",
-        scope: getDiscordConfig().scopes,
+        scope: ["identify", "email"],
         passReqToCallback: true,
       },
       async (
@@ -208,7 +208,9 @@ export function setupAuth(app: Express) {
         done: any,
       ) => {
         try {
-          console.log("Discord profile:", JSON.stringify(profile, null, 2));
+          console.log("Discord authentication successful, received profile");
+          console.log("Discord profile ID:", profile.id);
+          console.log("Discord profile username:", profile.username);
           
           // Check if user is logged in - this is required for connecting Discord
           if (!req.user) {
@@ -435,15 +437,25 @@ export function setupAuth(app: Express) {
   app.get(
     "/api/auth/callback/discord",
     (req, res, next) => {
+      console.log("Received Discord callback, authenticating...");
       passport.authenticate("discord", (err, user, info) => {
         if (err) {
           console.error("Discord authentication error:", err);
+          console.error("Error code:", err.code);
+          console.error("Error status:", err.status);
+          console.error("Error message:", err.message);
+          
+          if (err.code === 'invalid_client') {
+            console.error("Invalid client error - check your Discord client ID and secret");
+            return res.redirect("/dashboard/settings?error=discord_invalid_client");
+          }
+          
           return res.redirect("/dashboard/settings?error=discord_auth_failed");
         }
         
         if (!user) {
           console.warn("Discord authentication failed:", info?.message || "Unknown reason");
-          return res.redirect("/dashboard/settings?error=discord_link_failed");
+          return res.redirect("/dashboard/settings?error=discord_link_failed&reason=" + encodeURIComponent(info?.message || "Unknown reason"));
         }
         
         req.login(user, (loginErr) => {

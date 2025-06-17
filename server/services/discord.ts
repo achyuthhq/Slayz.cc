@@ -16,8 +16,16 @@ export const getDiscordConfig = (): DiscordConfig => {
     clientId: process.env.DISCORD_CLIENT_ID || "",
     clientSecret: process.env.DISCORD_CLIENT_SECRET || "",
     callbackUrl: process.env.DISCORD_REDIRECT_URI || "https://slayz.cc/api/auth/callback/discord",
-    scopes: ["identify", "email", "connections", "guilds", "guilds.members.read"],
+    scopes: ["identify", "email"],
   };
+
+  console.log("Discord configuration:", {
+    clientId: config.clientId,
+    clientIdLength: config.clientId.length,
+    clientSecretLength: config.clientSecret.length,
+    callbackUrl: config.callbackUrl,
+    scopes: config.scopes
+  });
 
   return discordConfigSchema.parse(config);
 };
@@ -106,16 +114,19 @@ export const validateDiscordConfig = (): boolean => {
 
 export async function exchangeCodeForToken(code: string) {
   try {
-    console.log(`Exchanging code for token with callback URL: ${getDiscordConfig().callbackUrl}`);
+    const config = getDiscordConfig();
+    console.log(`Exchanging code for token with callback URL: ${config.callbackUrl}`);
+    console.log(`Using client ID: ${config.clientId.substring(0, 6)}... (${config.clientId.length} chars)`);
+    console.log(`Using client secret: (${config.clientSecret.length} chars)`);
     
     const tokenResponse = await axios.post(
       "https://discord.com/api/oauth2/token",
       querystring.stringify({
-        client_id: getDiscordConfig().clientId,
-        client_secret: getDiscordConfig().clientSecret,
+        client_id: config.clientId,
+        client_secret: config.clientSecret,
         grant_type: "authorization_code",
         code,
-        redirect_uri: getDiscordConfig().callbackUrl,
+        redirect_uri: config.callbackUrl,
       }),
       {
         headers: {
@@ -131,6 +142,13 @@ export async function exchangeCodeForToken(code: string) {
       error instanceof Error 
         ? error.message 
         : (error as any)?.response?.data || 'Unknown error');
+    
+    // Add more detailed error logging
+    if ((error as any)?.response) {
+      console.error("Response status:", (error as any).response.status);
+      console.error("Response data:", (error as any).response.data);
+    }
+    
     throw error;
   }
 };
