@@ -29,7 +29,7 @@ export default defineConfig({
     "process.env": {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV),
       VITE_DISCORD_CLIENT_ID: JSON.stringify(process.env.VITE_DISCORD_CLIENT_ID || '1350091089398464574'),
-      VITE_DISCORD_REDIRECT_URI: JSON.stringify(process.env.VITE_DISCORD_REDIRECT_URI || 'https://slayz.cc/oauth2/authorize/callback'),
+      VITE_DISCORD_REDIRECT_URI: JSON.stringify(process.env.VITE_DISCORD_REDIRECT_URI || 'https://slayz.cc/api/auth/callback/discord'),
     },
   },
   build: {

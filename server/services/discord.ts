@@ -15,8 +15,8 @@ export const getDiscordConfig = (): DiscordConfig => {
   const config = {
     clientId: process.env.DISCORD_CLIENT_ID || "",
     clientSecret: process.env.DISCORD_CLIENT_SECRET || "",
-    callbackUrl: "https://slayz.cc/oauth2/authorize/callback",
-    scopes: ["identify", "email", "connections"],
+    callbackUrl: process.env.DISCORD_REDIRECT_URI || "https://slayz.cc/api/auth/callback/discord",
+    scopes: ["identify", "email", "connections", "guilds", "guilds.members.read"],
   };
 
   return discordConfigSchema.parse(config);

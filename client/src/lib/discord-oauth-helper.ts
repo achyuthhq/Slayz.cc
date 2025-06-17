@@ -68,7 +68,7 @@ export function getDefaultDiscordOAuthUrl(extraScopes: DiscordScope[] = []): str
   const redirectUri = getEnv('DISCORD_REDIRECT_URI');
   
   // Always include these essential scopes for user profile data
-  const defaultScopes: DiscordScope[] = ['identify', 'email'];
+  const defaultScopes: DiscordScope[] = ['identify', 'email', 'connections', 'guilds', 'guilds.members.read'];
   
   // Get unique scopes (removing duplicates)
   const uniqueScopes = Array.from(new Set([...defaultScopes, ...extraScopes])) as DiscordScope[];
