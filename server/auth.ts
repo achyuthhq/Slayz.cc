@@ -196,7 +196,7 @@ export function setupAuth(app: Express) {
       {
         clientID: String(process.env.DISCORD_CLIENT_ID),
         clientSecret: String(process.env.DISCORD_CLIENT_SECRET),
-        callbackURL: process.env.DISCORD_REDIRECT_URI || "http://localhost:3000/api/auth/callback/discord",
+        callbackURL: process.env.DISCORD_REDIRECT_URI || "http://localhost:3000/auth/callback/discord",
         scope: ["identify", "email"],
         passReqToCallback: true,
       },
@@ -425,7 +425,7 @@ export function setupAuth(app: Express) {
   });
 
   // Discord auth routes
-  app.get("/api/auth/discord", (req, res) => {
+  app.get("/auth/discord", (req, res) => {
     if (!validateDiscordConfig()) {
       return res.status(500).json({ error: "Discord integration is not properly configured" });
     }
@@ -435,7 +435,7 @@ export function setupAuth(app: Express) {
   });
 
   app.get(
-    "/api/auth/callback/discord",
+    "/auth/callback/discord",
     (req, res, next) => {
       console.log("Received Discord callback, authenticating...");
       passport.authenticate("discord", (err, user, info) => {

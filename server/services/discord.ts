@@ -15,7 +15,7 @@ export const getDiscordConfig = (): DiscordConfig => {
   const config = {
     clientId: String(process.env.DISCORD_CLIENT_ID || ""),
     clientSecret: String(process.env.DISCORD_CLIENT_SECRET || ""),
-    callbackUrl: process.env.DISCORD_REDIRECT_URI || "http://localhost:3000/api/auth/callback/discord",
+    callbackUrl: process.env.DISCORD_REDIRECT_URI || "http://localhost:3000/auth/callback/discord",
     scopes: ["identify", "email"],
   };
 
