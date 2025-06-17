@@ -9,7 +9,7 @@
 if (typeof window !== 'undefined' && !window.__ENV__) {
   window.__ENV__ = {
     DISCORD_CLIENT_ID: '1350091089398464574',
-    DISCORD_REDIRECT_URI: 'https://slayz.cc/oauth2/authorize/callback',
+    DISCORD_REDIRECT_URI: 'https://slayz.cc/api/auth/callback/discord',
     IS_DEVELOPMENT: process.env.NODE_ENV === 'development' || import.meta.env?.DEV === true
   };
   

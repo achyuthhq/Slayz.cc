@@ -44,7 +44,7 @@ export default async function handler(req, res) {
           client_secret: process.env.DISCORD_CLIENT_SECRET || 'your-client-secret-placeholder',
           grant_type: 'authorization_code',
           code: req.query.code,
-          redirect_uri: process.env.DISCORD_REDIRECT_URI || 'https://slayz.cc/callback/discord',
+          redirect_uri: process.env.DISCORD_REDIRECT_URI || 'https://slayz.cc/api/auth/callback/discord',
         }),
       });
 

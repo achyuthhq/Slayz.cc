@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     }
     
     // Log the redirect URI being used
-    const redirectUri = process.env.DISCORD_REDIRECT_URI || 'https://slayz.cc/callback/discord';
+    const redirectUri = process.env.DISCORD_REDIRECT_URI || 'https://slayz.cc/api/auth/callback/discord';
     console.log('Using redirect URI:', redirectUri);
     
     // Step 1: Exchange code for token

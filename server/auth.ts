@@ -433,7 +433,7 @@ export function setupAuth(app: Express) {
   });
 
   app.get(
-    "/oauth2/authorize/callback",
+    "/api/auth/callback/discord",
     (req, res, next) => {
       passport.authenticate("discord", (err, user, info) => {
         if (err) {

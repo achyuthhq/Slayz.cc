@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     // Discord OAuth configuration
     const clientId = process.env.DISCORD_CLIENT_ID || '1350091089398464574';
     const clientSecret = process.env.DISCORD_CLIENT_SECRET || ''; // You must set your real client secret in environment variables!
-    const redirectUri = process.env.DISCORD_REDIRECT_URI || 'https://slayz.cc/callback/discord';
+    const redirectUri = process.env.DISCORD_REDIRECT_URI || 'https://slayz.cc/api/auth/callback/discord';
 
     // Warn if using empty client secret
     if (!clientSecret) {

@@ -310,7 +310,7 @@ export default function DiscordDebugInfo({ discordUser, className = '' }: Discor
               <li>
                 Test your OAuth URL directly in browser:
                 <div className="mt-1 p-2 bg-gray-200 dark:bg-gray-700 rounded break-all">
-                  {typeof window !== 'undefined' ? `https://discord.com/oauth2/authorize?client_id=${process.env.DISCORD_CLIENT_ID || '1350091089398464574'}&redirect_uri=${encodeURIComponent(process.env.NEXT_PUBLIC_DISCORD_REDIRECT_URI || 'http://localhost:3000/callback/discord')}&response_type=code&scope=identify` : 'Loading...'}
+                  {typeof window !== 'undefined' ? `https://discord.com/oauth2/authorize?client_id=${process.env.DISCORD_CLIENT_ID || '1350091089398464574'}&redirect_uri=${encodeURIComponent(process.env.NEXT_PUBLIC_DISCORD_REDIRECT_URI || 'https://slayz.cc/api/auth/callback/discord')}&response_type=code&scope=identify` : 'Loading...'}
                 </div>
               </li>
               <li>
@@ -318,9 +318,9 @@ export default function DiscordDebugInfo({ discordUser, className = '' }: Discor
                 <div className="mt-1 p-2 bg-gray-200 dark:bg-gray-700 rounded font-mono text-xs">
                   DISCORD_CLIENT_ID=your_client_id<br />
                   DISCORD_CLIENT_SECRET=your_client_secret<br />
-                  DISCORD_REDIRECT_URI=http://localhost:3000/callback/discord<br />
+                  DISCORD_REDIRECT_URI=https://slayz.cc/api/auth/callback/discord<br />
                   NEXT_PUBLIC_DISCORD_CLIENT_ID=your_client_id<br />
-                  NEXT_PUBLIC_DISCORD_REDIRECT_URI=http://localhost:3000/callback/discord
+                  NEXT_PUBLIC_DISCORD_REDIRECT_URI=https://slayz.cc/api/auth/callback/discord
                 </div>
               </li>
             </ul>
