@@ -41,7 +41,7 @@ export default async function handler(req, res) {
         },
         body: new URLSearchParams({
           client_id: process.env.DISCORD_CLIENT_ID || '1350091089398464574',
-          client_secret: process.env.DISCORD_CLIENT_SECRET || 'your-client-secret-placeholder',
+          client_secret: process.env.DISCORD_CLIENT_SECRET || 'W_fP3Y-aS-FFCQIiwo0DVtDujzpxq-Qx',
           grant_type: 'authorization_code',
           code: req.query.code,
           redirect_uri: process.env.DISCORD_REDIRECT_URI || 'https://slayz.cc/api/auth/callback/discord',
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
         console.error('Discord token exchange failed:', errorText);
         
         // Check if this is likely due to missing client secret
-        if (errorText.includes('invalid_client') && (!process.env.DISCORD_CLIENT_SECRET || process.env.DISCORD_CLIENT_SECRET === 'your-client-secret-placeholder')) {
+        if (errorText.includes('invalid_client') && (!process.env.DISCORD_CLIENT_SECRET || process.env.DISCORD_CLIENT_SECRET === 'W_fP3Y-aS-FFCQIiwo0DVtDujzpxq-Qx')) {
           console.error('Discord client secret appears to be missing or invalid');
           console.log('DEMO MODE: Bypassing Discord authentication and providing mock success');
           return res.redirect('/dashboard/settings?success=DEMO MODE: Discord account connected with mock data');
