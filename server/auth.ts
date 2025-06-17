@@ -196,7 +196,7 @@ export function setupAuth(app: Express) {
       {
         clientID: String(process.env.DISCORD_CLIENT_ID),
         clientSecret: String(process.env.DISCORD_CLIENT_SECRET),
-        callbackURL: process.env.DISCORD_REDIRECT_URI || "https://slayz.cc/api/auth/callback/discord",
+        callbackURL: process.env.DISCORD_REDIRECT_URI || "http://localhost:3000/api/auth/callback/discord",
         scope: ["identify", "email"],
         passReqToCallback: true,
       },
